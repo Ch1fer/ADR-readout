@@ -46,9 +46,12 @@ for file in files:
 
     if file.endswith('.jpg'):
         image_path = os.path.join(image_dir, file)
-        img = Image.open(image_path)
+        img = cv.imread(image_path)
+        img = cv.resize(img, (64, 64), interpolation=cv.INTER_AREA)  # resize image
+        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+        clahe = cv.createCLAHE(clipLimit=0.05, tileGridSize=(4, 4))  # increase image contrast
+        img = clahe.apply(img)
         images.append(img)
-
 
 labels = pd.read_csv(label_dir, nrows=countsOfRows)  # Load labels
 labels = torch.tensor(labels.values, dtype=torch.int64)
@@ -56,8 +59,8 @@ labels = torch.tensor(labels.values, dtype=torch.int64)
 transform = tv.transforms.ToTensor()
 myDataset = CustomDataset(images, labels, transform=transform)  # Create custom dataset from previously images & labels
 
-row = 1
-plt.imshow(myDataset[row][0].numpy()[0])  # picture
+row = 5
+plt.imshow(myDataset[row][0].numpy()[0], cmap="gray")  # picture
 plt.xlabel(f"{myDataset[row][1][0]} : {myDataset[row][1][1]}")  # label
 plt.show()  # visualise the first picture and label
 
