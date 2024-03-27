@@ -11,6 +11,45 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
+
+def show_8_samples(dataset, size, start):
+    if size <= start + 8:
+        print("wrong start!")
+        return
+
+    plt.subplot(2, 4, 1)
+    plt.imshow(dataset[start][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start][1][0]} : {dataset[start][1][1]}")
+
+    plt.subplot(2, 4, 2)
+    plt.imshow(dataset[start + 1][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 1][1][0]} : {dataset[start + 1][1][1]}")
+
+    plt.subplot(2, 4, 3)
+    plt.imshow(dataset[start + 2][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 2][1][0]} : {dataset[start + 2][1][1]}")
+
+    plt.subplot(2, 4, 4)
+    plt.imshow(dataset[start + 3][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 3][1][0]} : {dataset[start + 3][1][1]}")
+
+    plt.subplot(2, 4, 5)
+    plt.imshow(dataset[start + 4][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 4][1][0]} : {dataset[start + 4][1][1]}")
+
+    plt.subplot(2, 4, 6)
+    plt.imshow(myDataset[start + 5][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 5][1][0]} : {dataset[start + 5][1][1]}")
+
+    plt.subplot(2, 4, 7)
+    plt.imshow(dataset[start + 6][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 6][1][0]} : {dataset[start + 6][1][1]}")
+
+    plt.subplot(2, 4, 8)
+    plt.imshow(myDataset[start + 7][0].numpy()[0], cmap="gray")
+    plt.xlabel(f"{dataset[start + 7][1][0]} : {dataset[start + 7][1][1]}")
+    plt.show()
+
 class CustomDataset(Dataset):  # My custom dataset class
     def __init__(self, images, labels, transform=None):
         self.images = images
@@ -48,9 +87,12 @@ for file in files:
         image_path = os.path.join(image_dir, file)
         img = cv.imread(image_path)
         img = cv.resize(img, (64, 64), interpolation=cv.INTER_AREA)  # resize image
-        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+
         clahe = cv.createCLAHE(clipLimit=0.05, tileGridSize=(4, 4))  # increase image contrast
-        img = clahe.apply(img)
+        b, g, r = cv.split(img)
+        img = cv.merge((clahe.apply(b), clahe.apply(g), clahe.apply(r)))
+
+        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
         images.append(img)
 
 labels = pd.read_csv(label_dir, nrows=countsOfRows)  # Load labels
@@ -59,10 +101,16 @@ labels = torch.tensor(labels.values, dtype=torch.int64)
 transform = tv.transforms.ToTensor()
 myDataset = CustomDataset(images, labels, transform=transform)  # Create custom dataset from previously images & labels
 
-row = 5
-plt.imshow(myDataset[row][0].numpy()[0], cmap="gray")  # picture
-plt.xlabel(f"{myDataset[row][1][0]} : {myDataset[row][1][1]}")  # label
-plt.show()  # visualise the first picture and label
+show_8_samples(myDataset, countsOfRows, 0)  # displays 8 images starting from the index "start"
+
+
+
+
+
+
+# plt.imshow(myDataset[row][0].numpy()[0], cmap="gray")  # picture
+# plt.xlabel(f"{myDataset[row][1][0]} : {myDataset[row][1][1]}")  # label
+# plt.show()  # visualise the first picture and label
 
 
 """___Dataloader___"""
