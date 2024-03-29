@@ -93,6 +93,8 @@ for file in files:
         # img = cv.merge((clahe.apply(b), clahe.apply(g), clahe.apply(r)))
 
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+        # _, img = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
+
         images.append(img)
         # plt.imshow(img, cmap="gray")
         # plt.show()
