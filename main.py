@@ -7,6 +7,7 @@ import torchvision as tv
 import cv2 as cv
 import os
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 
 
@@ -36,7 +37,7 @@ def show_8_samples(dataset, size, start):
     plt.xlabel(f"{dataset[start + 4][1][0]} : {dataset[start + 4][1][1]}")
 
     plt.subplot(2, 4, 6)
-    plt.imshow(myDataset[start + 5][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 5][0].numpy()[0], cmap="gray")
     plt.xlabel(f"{dataset[start + 5][1][0]} : {dataset[start + 5][1][1]}")
 
     plt.subplot(2, 4, 7)
@@ -44,7 +45,7 @@ def show_8_samples(dataset, size, start):
     plt.xlabel(f"{dataset[start + 6][1][0]} : {dataset[start + 6][1][1]}")
 
     plt.subplot(2, 4, 8)
-    plt.imshow(myDataset[start + 7][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 7][0].numpy()[0], cmap="gray")
     plt.xlabel(f"{dataset[start + 7][1][0]} : {dataset[start + 7][1][1]}")
     plt.show()
 
@@ -69,7 +70,8 @@ class CustomDataset(Dataset):  # My custom dataset class
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 1000
+countsOfRows = 5000
+resizeVal = 32
 
 
 """___PREPARE_DATA_AND_TRANSFORM___"""
@@ -84,7 +86,7 @@ for file in files:
     if file.endswith('.jpg'):
         image_path = os.path.join(image_dir, file)
         img = cv.imread(image_path)
-        img = cv.resize(img, (48, 48), interpolation=cv.INTER_AREA)  # resize image
+        img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
 
         clahe = cv.createCLAHE(clipLimit=0.1, tileGridSize=(4, 4))  # increase image contrast
         b, g, r = cv.split(img)
@@ -97,12 +99,20 @@ for file in files:
 
 
 labels = pd.read_csv(label_dir, nrows=countsOfRows)  # Load labels
-labels = torch.tensor(labels.values, dtype=torch.float32)
+labels = torch.tensor(labels.values, dtype=torch.float32)  # transform to tensor
+
+X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.3, random_state=12)
+# dividing the dataset into training and test
 
 transform = tv.transforms.ToTensor()
-myDataset = CustomDataset(images, labels, transform=transform)  # Create custom dataset from previously images & labels
+datasetTrain = CustomDataset(X_train, y_train, transform=transform)  # Create train dataset
+datasetTest = CustomDataset(X_test, y_test, transform=transform)  # Create test dataset
 
-show_8_samples(myDataset, countsOfRows, 0)  # displays 8 images starting from the index "start"
+print(f"train: {len(datasetTrain)}")
+print(f"test: {len(datasetTest)}")
+
+
+# show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
 
 
 # plt.imshow(myDataset[row][0].numpy()[0], cmap="gray")  # picture
@@ -112,65 +122,99 @@ show_8_samples(myDataset, countsOfRows, 0)  # displays 8 images starting from th
 
 """___Dataloader___"""
 batch_size = 16
-dataloader = torch.utils.data.DataLoader(myDataset, batch_size=batch_size, shuffle=True)
+dataloader = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True)
 
-for img, l in dataloader:
-    print(img.shape)
-    print(l.shape)
-    break
+# for img, l in dataloader:
+#     print(img.shape)
+#     print(l.shape)
+#     break
 
 
-# """___MODEL___"""
-#
-#
-# class ShallowNetwork(nn.Module):
-#     def __init__(self):
-#         super(ShallowNetwork, self).__init__()
-#
-#         self.flatten = nn.Flatten()
-#         self.linear1 = nn.Linear(48 * 48, 100)
-#         self.linear2 = nn.Linear(100, 50)
-#         self.linear3 = nn.Linear(50, 2)
-#         self.act = nn.ReLU()
-#         self.outF = nn.Softmax()
-#
-#     def forward(self, x):
-#         x = self.flatten(x)
-#         x = self.linear1(x)
-#         x = self.act(x)
-#         x = self.linear2(x)
-#         x = self.act(x)
-#         x = self.linear3(x)
-#         x = self.outF(x)
-#         return x
-#
-#
-# learning_rate = 0.01
-# model = ShallowNetwork()
-# loss_fn = nn.CrossEntropyLoss()
-# optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-#
-#
-#
-# """___TRAINING___"""
-# epochs = 100
-#
-# for epoch in range(epochs):
-#     loss_val = 0
-#     for img, label in dataloader:
-#         optimizer.zero_grad()
-#
-#         # one_hot_first_column = nn.functional.one_hot(label[:, 0], 12)
-#         # one_hot_second_column = nn.functional.one_hot(label[:, 1], 60)
-#         #
-#         # one_hot_label = torch.cat((one_hot_first_column, one_hot_second_column), dim=1)
-#         predict = model(img)
-#
-#         loss = loss_fn(predict, label)
-#         loss.backward()
-#
-#         loss_val += loss.item()
-#
-#         optimizer.step()
-#
-#     print(loss_val / len(dataloader))
+"""___MODEL___"""
+
+class ShallowNetwork(nn.Module):
+    def __init__(self):
+        super(ShallowNetwork, self).__init__()
+
+        self.flatten = nn.Flatten()
+        self.linear1 = nn.Linear(resizeVal * resizeVal, 200)
+        self.linear2 = nn.Linear(200, 100)
+        self.linear3 = nn.Linear(100, 72)
+        self.act = nn.ReLU()
+        self.outF = nn.Softmax(dim=1)
+    
+    def forward(self, x):
+        x = self.flatten(x)
+        x = self.linear1(x)
+        x = self.act(x)
+        x = self.linear2(x)
+        x = self.act(x)
+        x = self.linear3(x)
+        x = self.outF(x)
+        return x
+
+
+learning_rate = 0.01
+model = ShallowNetwork()
+loss_fn = nn.CrossEntropyLoss()
+# loss_fn = nn.BCELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+# optimizer = torch.optim.Adam(model.parameters())
+
+
+
+"""___TRAINING___"""
+epochs = 20
+
+for epoch in range(epochs):
+    loss_val = 0
+    for img, label in dataloader:
+        optimizer.zero_grad()
+
+        predict = model(img)
+
+        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12)  # create hot tensor for hours
+        minuteOneHot = nn.functional.one_hot(label[:, 1].long(), 60)  # create hot tensor for minutes
+
+        labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=1)  # combining minutes and hours into one output tensor
+        # print(f"shape of labelOneHot{labelOneHot.shape}")
+
+        loss = loss_fn(predict, labelOneHot.float())
+        loss.backward()
+
+        loss_val += loss.item()
+
+        optimizer.step()
+    print(loss_val / len(dataloader))
+
+"""___TESTING___"""
+
+sizeTest = len(datasetTest)
+countCorrect = 0
+
+for img, label in datasetTest:
+
+    predict = model(img)
+
+    hourOneHot = nn.functional.one_hot(label[0].long(), 12)  # create hot tensor for hours
+    hourOneHot = hourOneHot.type(torch.int)
+    minuteOneHot = nn.functional.one_hot(label[1].long(), 60)  # create hot tensor for minutes
+    minuteOneHot = minuteOneHot.type(torch.int)
+
+
+    labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=0)
+
+    hourPredict = predict[0][:12]
+    hourPredict = hourPredict == hourPredict.max()
+    hourPredict = hourPredict.type(torch.int)
+
+    minutePredict = predict[0][12:]
+    minutePredict = minutePredict == minutePredict.max()
+    minutePredict = minutePredict.type(torch.int)
+
+    predictOneHot = torch.cat((minutePredict, hourPredict), dim=0)
+    countCorrect += (torch.all(predictOneHot == labelOneHot)).item()
+
+accuracy = countCorrect / sizeTest
+print(f"{countCorrect} / {sizeTest}")
+print(accuracy)
