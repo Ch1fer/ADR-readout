@@ -70,7 +70,7 @@ class CustomDataset(Dataset):  # My custom dataset class
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 5000
+countsOfRows = 10000
 resizeVal = 32
 
 
@@ -88,9 +88,9 @@ for file in files:
         img = cv.imread(image_path)
         img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
 
-        clahe = cv.createCLAHE(clipLimit=0.1, tileGridSize=(4, 4))  # increase image contrast
-        b, g, r = cv.split(img)
-        img = cv.merge((clahe.apply(b), clahe.apply(g), clahe.apply(r)))
+        # clahe = cv.createCLAHE(clipLimit=0.1, tileGridSize=(4, 4))  # increase image contrast
+        # b, g, r = cv.split(img)
+        # img = cv.merge((clahe.apply(b), clahe.apply(g), clahe.apply(r)))
 
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
         images.append(img)
@@ -112,7 +112,7 @@ print(f"train: {len(datasetTrain)}")
 print(f"test: {len(datasetTest)}")
 
 
-# show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
+show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
 
 
 # plt.imshow(myDataset[row][0].numpy()[0], cmap="gray")  # picture
@@ -137,9 +137,9 @@ class ShallowNetwork(nn.Module):
         super(ShallowNetwork, self).__init__()
 
         self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear(resizeVal * resizeVal, 200)
-        self.linear2 = nn.Linear(200, 100)
-        self.linear3 = nn.Linear(100, 72)
+        self.linear1 = nn.Linear(resizeVal * resizeVal, 512)
+        self.linear2 = nn.Linear(512, 256)
+        self.linear3 = nn.Linear(256, 72)
         self.act = nn.ReLU()
         self.outF = nn.Softmax(dim=1)
     
@@ -154,7 +154,7 @@ class ShallowNetwork(nn.Module):
         return x
 
 
-learning_rate = 0.01
+learning_rate = 0.02
 model = ShallowNetwork()
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.BCELoss()
@@ -164,7 +164,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 
 """___TRAINING___"""
-epochs = 20
+epochs = 10
 
 for epoch in range(epochs):
     loss_val = 0
