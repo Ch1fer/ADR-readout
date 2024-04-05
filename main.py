@@ -48,9 +48,9 @@ def show_8_samples(dataset, size, start):
     plt.imshow(dataset[start + 7][0].numpy()[0], cmap="gray")
     plt.xlabel(f"{dataset[start + 7][1][0]} : {dataset[start + 7][1][1]}")
     plt.show()
+# function for displaying photos after transformation
 
-
-class CustomDataset(Dataset):  # My custom dataset class
+class CustomDataset(Dataset):
     def __init__(self, images, labels, transform=None):
         self.images = images
         self.labels = labels
@@ -67,7 +67,7 @@ class CustomDataset(Dataset):  # My custom dataset class
             image = self.transform(image)
 
         return image, label
-
+# My custom dataset class
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
