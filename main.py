@@ -8,7 +8,7 @@ import cv2 as cv
 import os
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-
+import numpy as np
 
 
 def show_8_samples(dataset, size, start):
@@ -49,6 +49,7 @@ def show_8_samples(dataset, size, start):
     plt.xlabel(f"{dataset[start + 7][1][0]} : {dataset[start + 7][1][1]}")
     plt.show()
 
+
 class CustomDataset(Dataset):  # My custom dataset class
     def __init__(self, images, labels, transform=None):
         self.images = images
@@ -70,7 +71,7 @@ class CustomDataset(Dataset):  # My custom dataset class
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 10000
+countsOfRows = 5000
 resizeVal = 32
 
 
@@ -84,20 +85,11 @@ for file in files:
     fileCounter += 1
 
     if file.endswith('.jpg'):
-        image_path = os.path.join(image_dir, file)
+        image_path = os.path.join(image_dir, file)  # create directory path
         img = cv.imread(image_path)
         img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
-
-        # clahe = cv.createCLAHE(clipLimit=0.1, tileGridSize=(4, 4))  # increase image contrast
-        # b, g, r = cv.split(img)
-        # img = cv.merge((clahe.apply(b), clahe.apply(g), clahe.apply(r)))
-
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
-        # _, img = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
-
         images.append(img)
-        # plt.imshow(img, cmap="gray")
-        # plt.show()
 
 
 labels = pd.read_csv(label_dir, nrows=countsOfRows)  # Load labels
@@ -114,38 +106,37 @@ print(f"train: {len(datasetTrain)}")
 print(f"test: {len(datasetTest)}")
 
 
-show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
+# show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
 
 
-# plt.imshow(myDataset[row][0].numpy()[0], cmap="gray")  # picture
-# plt.xlabel(f"{myDataset[row][1][0]} : {myDataset[row][1][1]}")  # label
-# plt.show()  # visualise the first picture and label
-
-
-"""___Dataloader___"""
+"""___DATALOADER___"""
 batch_size = 16
 dataloader = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True)
 
-# for img, l in dataloader:
-#     print(img.shape)
-#     print(l.shape)
-#     break
-
 
 """___MODEL___"""
-
 class ShallowNetwork(nn.Module):
     def __init__(self):
         super(ShallowNetwork, self).__init__()
-
+        self.sharpen_kernel = torch.tensor([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], dtype=torch.float32).unsqueeze(
+            0).unsqueeze(0)
+        self.conv = nn.Conv2d(in_channels=1, out_channels=1, kernel_size=3, padding=0)
+        self.conv.weight.data = self.sharpen_kernel
         self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear(resizeVal * resizeVal, 512)
+        self.linear1 = nn.Linear((resizeVal - 2) * (resizeVal - 2), 512)
         self.linear2 = nn.Linear(512, 256)
         self.linear3 = nn.Linear(256, 72)
         self.act = nn.ReLU()
-        self.outF = nn.Softmax(dim=1)
+        self.outF = nn.ReLU()
     
     def forward(self, x):
+        # plt.imshow(np.transpose(x[0].numpy(), (1, 2, 0)))
+        # plt.axis('off')
+        # plt.show()
+        x = self.conv(x)
+        # plt.imshow(np.transpose(x[0].detach().numpy(), (1, 2, 0)))
+        # plt.axis('off')
+        # plt.show()
         x = self.flatten(x)
         x = self.linear1(x)
         x = self.act(x)
@@ -156,17 +147,14 @@ class ShallowNetwork(nn.Module):
         return x
 
 
-learning_rate = 0.02
-model = ShallowNetwork()
+learning_rate = 0.01
 loss_fn = nn.CrossEntropyLoss()
-# loss_fn = nn.BCELoss()
+model = ShallowNetwork()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-# optimizer = torch.optim.Adam(model.parameters())
-
 
 
 """___TRAINING___"""
-epochs = 10
+epochs = 1
 
 for epoch in range(epochs):
     loss_val = 0
@@ -177,17 +165,16 @@ for epoch in range(epochs):
 
         hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12)  # create hot tensor for hours
         minuteOneHot = nn.functional.one_hot(label[:, 1].long(), 60)  # create hot tensor for minutes
-
         labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=1)  # combining minutes and hours into one output tensor
-        # print(f"shape of labelOneHot{labelOneHot.shape}")
 
         loss = loss_fn(predict, labelOneHot.float())
         loss.backward()
+        optimizer.step()
 
         loss_val += loss.item()
 
-        optimizer.step()
     print(loss_val / len(dataloader))
+
 
 """___TESTING___"""
 
@@ -199,22 +186,19 @@ for img, label in datasetTest:
     predict = model(img)
 
     hourOneHot = nn.functional.one_hot(label[0].long(), 12)  # create hot tensor for hours
-    hourOneHot = hourOneHot.type(torch.int)
+    hourOneHot = hourOneHot.type(torch.float)
     minuteOneHot = nn.functional.one_hot(label[1].long(), 60)  # create hot tensor for minutes
-    minuteOneHot = minuteOneHot.type(torch.int)
+    minuteOneHot = minuteOneHot.type(torch.float)
 
+    labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=0)  # combining minutes and hours into one hot label tensor
 
-    labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=0)
-
-    hourPredict = predict[0][:12]
-    hourPredict = hourPredict == hourPredict.max()
-    hourPredict = hourPredict.type(torch.int)
-
-    minutePredict = predict[0][12:]
-    minutePredict = minutePredict == minutePredict.max()
-    minutePredict = minutePredict.type(torch.int)
+    hourPredict = predict[0][:12]  # 12 classes for hours
+    hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
+    minutePredict = predict[0][12:]  # 60 classes for minutes
+    minutePredict = minutePredict == minutePredict.max()  # replace the max value with 1, and all other values with 0
 
     predictOneHot = torch.cat((minutePredict, hourPredict), dim=0)
+
     countCorrect += (torch.all(predictOneHot == labelOneHot)).item()
 
 accuracy = countCorrect / sizeTest
