@@ -71,7 +71,7 @@ class CustomDataset(Dataset):
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 5000
+countsOfRows = 10000
 resizeVal = 32
 
 
@@ -126,7 +126,7 @@ class ShallowNetwork(nn.Module):
         self.linear1 = nn.Linear((resizeVal - 2) * (resizeVal - 2), 512)
         self.linear2 = nn.Linear(512, 256)
         self.linear3 = nn.Linear(256, 72)
-        self.act = nn.ReLU()
+        self.act = nn.Tanh()
         self.outF = nn.ReLU()
     
     def forward(self, x):
@@ -147,14 +147,14 @@ class ShallowNetwork(nn.Module):
         return x
 
 
-learning_rate = 0.01
+learning_rate = 0.001
 loss_fn = nn.CrossEntropyLoss()
 model = ShallowNetwork()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 
 """___TRAINING___"""
-epochs = 1
+epochs = 10
 
 for epoch in range(epochs):
     loss_val = 0
