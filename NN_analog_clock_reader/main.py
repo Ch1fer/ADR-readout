@@ -71,8 +71,8 @@ class CustomDataset(Dataset):
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 10000
-resizeVal = 32
+countsOfRows = 1000
+resizeVal = 64
 
 
 """___PREPARE_DATA_AND_TRANSFORM___"""
@@ -124,8 +124,8 @@ class ShallowNetwork(nn.Module):
         self.conv.weight.data = self.sharpen_kernel
         self.flatten = nn.Flatten()
         self.linear1 = nn.Linear((resizeVal - 2) * (resizeVal - 2), 256)
-        self.linear2 = nn.Linear(256, 128)
-        self.linear3 = nn.Linear(128, 2)
+        self.linear2 = nn.Linear(256, 60)
+        self.linear3 = nn.Linear(60, 1)
         self.act = nn.ReLU()
         self.outF = nn.ReLU()
 
@@ -147,11 +147,65 @@ class ShallowNetwork(nn.Module):
         return x
 
 
-learning_rate = 0.01
+class ConvolutionNetwork(nn.Module):
+    def __init__(self):
+        super(ConvolutionNetwork, self).__init__()
+        self.act = nn.ReLU()
+        self.maxpool = nn.MaxPool2d(2, 2)
+        self.conv0 = nn.Conv2d(1, 32, 3, stride=1, padding=0)
+        self.conv1 = nn.Conv2d(32, 64, 3, stride=1, padding=0)
+        self.conv2 = nn.Conv2d(64, 64, 3, stride=1, padding=0)
+        self.conv3 = nn.Conv2d(64, 64, 3, stride=1, padding=0)
+
+        self.adaptive = nn.AdaptiveAvgPool2d((1, 1))
+        self.flatten = nn.Flatten()
+        self.linear1 = nn.Linear(64, 32)
+        self.linear2 = nn.Linear(32, 12)
+        self.softmax = nn.Softmax(dim=1)
+
+    def forward(self, x):
+        # 64x64
+        # print(x.shape)
+        x = self.conv0(x)
+        x = self.act(x)
+        x = self.maxpool(x)
+
+        # 31x31
+        # print(x.shape)
+        x = self.conv1(x)
+        x = self.act(x)
+        x = self.maxpool(x)
+
+        # 15x15
+        # print(x.shape)
+        x = self.conv2(x)
+        x = self.act(x)
+        x = self.maxpool(x)
+
+        # 7x7
+        x = self.conv3(x)
+        x = self.act(x)
+        x = self.maxpool(x)
+
+        # 3x3
+        # print(x.shape)
+
+        x = self.adaptive(x)
+        x = self.flatten(x)
+        x = self.linear1(x)
+        x = self.act(x)
+        x = self.linear2(x)
+        x = self.softmax(x)
+        # print(x.shape)
+
+        return x
+
+learning_rate = 0.05
 # loss_fn = nn.CrossEntropyLoss()
 loss_fn = nn.MSELoss()
 
-model = ShallowNetwork()
+# model = ShallowNetwork()
+model = ConvolutionNetwork()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 
@@ -164,13 +218,9 @@ for epoch in range(epochs):
         optimizer.zero_grad()
         predict = model(img)
 
-        hourLabel = label[:, 0] / 12
-        hourLabel = hourLabel.unsqueeze(1)
-        minuteLabel = label[:, 1] / 60
-        minuteLabel = minuteLabel.unsqueeze(1)
-        normalizedLabel = torch.cat((hourLabel, minuteLabel), dim=1)
+        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12)
 
-        loss = loss_fn(predict, normalizedLabel)
+        loss = loss_fn(predict, hourOneHot.float())
         loss.backward()
         optimizer.step()
 
@@ -188,17 +238,8 @@ for img, label in datasetTest:
 
     predict = model(img)
 
-    labelHour = label[0] / 12
-    labelHour = labelHour.unsqueeze(0)
-
-    labelMinutes = label[1] / 60
-    labelMinutes = labelMinutes.unsqueeze(0)
-
-    normalizedLabel = torch.cat((labelHour, labelMinutes), dim=0)
-    normalizedLabel = normalizedLabel.unsqueeze(0)
-
-    label_time_in_minutes = label.detach().numpy()[0] * 60 + label.detach().numpy()[1]
-    predict_time_in_minutes = predict.detach().numpy()[0][0] * 12 * 60 + predict.detach().numpy()[0][1] * 60
+    label_time_in_minutes = label.detach().numpy()[0] * 60
+    predict_time_in_minutes = predict.detach().numpy()[0][0] * 12 * 60
     # print(f"{label_time_in_minutes} - {predict_time_in_minutes:.2f}")
 
     difference = abs(label_time_in_minutes - predict_time_in_minutes)
