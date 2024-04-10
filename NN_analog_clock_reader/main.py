@@ -73,7 +73,7 @@ class CustomDataset(Dataset):
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
 countsOfRows = 1000
-resizeVal = 64
+resizeVal = 48
 
 
 """___PREPARE_DATA_AND_TRANSFORM___"""
@@ -127,11 +127,12 @@ class ConvolutionNetwork(nn.Module):
         #                       3-channels    64 filters     kernel = 3 stride = 1  pad = 0
         self.conv0 = nn.Conv2d(3, 64, 3, 1, 0)
         self.conv1 = nn.Conv2d(64, 64, 3, 1, 0)
+        self.conv2 = nn.Conv2d(64, 128, 3, 1, 0)
 
         self.flatten = nn.Flatten()
         # full connected feed forward
 
-        self.fc1 = nn.Linear(12544, 512)
+        self.fc1 = nn.Linear(2048, 512)
         self.fc2 = nn.Linear(512, 72)
 
     def forward(self, x):
@@ -139,17 +140,15 @@ class ConvolutionNetwork(nn.Module):
         x = self.actF(x)
         x = self.maxpool(x)
 
-        print(x.shape)
-
         x = self.conv1(x)
         x = self.actF(x)
         x = self.maxpool(x)
 
-        print(x.shape)
-
+        x = self.conv2(x)
+        x = self.actF(x)
+        x = self.maxpool(x)
+        # print(x.shape)
         x = self.flatten(x)
-
-        print(x.shape)
 
         x = self.fc1(x)
         x = self.actF(x)
@@ -159,7 +158,7 @@ class ConvolutionNetwork(nn.Module):
 
         return x
 
-learning_rate = 0.01
+learning_rate = 0.05
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.MSELoss()
 
@@ -177,9 +176,11 @@ for epoch in range(epochs):
         optimizer.zero_grad()
         predict = model(img)
 
-        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12)
+        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12)  # create hot tensor for hours
+        minuteOneHot = nn.functional.one_hot(label[:, 1].long(), 60)  # create hot tensor for minutes
+        labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=1)  # combining minutes and hours into one output tensor
 
-        loss = loss_fn(predict, hourOneHot.float())
+        loss = loss_fn(predict, labelOneHot.float())
         loss.backward()
         optimizer.step()
 
@@ -194,16 +195,23 @@ sizeTest = len(datasetTest)
 countCorrect = 0
 
 for img, label in datasetTest:
-
     predict = model(img)
 
-    label_time_in_minutes = label.detach().numpy()[0] * 60
-    predict_time_in_minutes = predict.detach().numpy()[0][0] * 12 * 60
-    # print(f"{label_time_in_minutes} - {predict_time_in_minutes:.2f}")
+    hourOneHot = nn.functional.one_hot(label[0].long(), 12)  # create hot tensor for hours
+    hourOneHot = hourOneHot.type(torch.float)
+    minuteOneHot = nn.functional.one_hot(label[1].long(), 60)  # create hot tensor for minutes
+    minuteOneHot = minuteOneHot.type(torch.float)
 
-    difference = abs(label_time_in_minutes - predict_time_in_minutes)
-    if difference < 5:
-        countCorrect += 1
+    labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=0)  # combining minutes and hours into one hot label tensor
+
+    hourPredict = predict[0][:12]  # 12 classes for hours
+    hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
+    minutePredict = predict[0][12:]  # 60 classes for minutes
+    minutePredict = minutePredict == minutePredict.max()  # replace the max value with 1, and all other values with 0
+
+    predictOneHot = torch.cat((minutePredict.float(), hourPredict.float()), dim=0)
+
+    countCorrect += (torch.all(predictOneHot == labelOneHot)).item()
 
 
 accuracy = countCorrect / sizeTest
