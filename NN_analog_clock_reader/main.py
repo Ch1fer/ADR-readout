@@ -15,37 +15,36 @@ def show_8_samples(dataset, size, start):
     if size <= start + 8:
         print("wrong start!")
         return
-
     plt.subplot(2, 4, 1)
-    plt.imshow(dataset[start][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start][1][0]} : {dataset[start][1][1]}")
 
     plt.subplot(2, 4, 2)
-    plt.imshow(dataset[start + 1][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 1][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 1][1][0]} : {dataset[start + 1][1][1]}")
 
     plt.subplot(2, 4, 3)
-    plt.imshow(dataset[start + 2][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 2][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 2][1][0]} : {dataset[start + 2][1][1]}")
 
     plt.subplot(2, 4, 4)
-    plt.imshow(dataset[start + 3][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 3][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 3][1][0]} : {dataset[start + 3][1][1]}")
 
     plt.subplot(2, 4, 5)
-    plt.imshow(dataset[start + 4][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 4][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 4][1][0]} : {dataset[start + 4][1][1]}")
 
     plt.subplot(2, 4, 6)
-    plt.imshow(dataset[start + 5][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 5][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 5][1][0]} : {dataset[start + 5][1][1]}")
 
     plt.subplot(2, 4, 7)
-    plt.imshow(dataset[start + 6][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 6][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 6][1][0]} : {dataset[start + 6][1][1]}")
 
     plt.subplot(2, 4, 8)
-    plt.imshow(dataset[start + 7][0].numpy()[0], cmap="gray")
+    plt.imshow(dataset[start + 7][0].permute(1, 2, 0).numpy())
     plt.xlabel(f"{dataset[start + 7][1][0]} : {dataset[start + 7][1][1]}")
     plt.show()
 # function for displaying 8 photos after transformation
@@ -88,7 +87,7 @@ for file in files:
         image_path = os.path.join(image_dir, file)  # create directory path
         img = cv.imread(image_path)
         img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
-        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+        # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
         images.append(img)
 
 
@@ -106,7 +105,7 @@ print(f"train: {len(datasetTrain)}")
 print(f"test: {len(datasetTest)}")
 
 
-# show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
+show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
 
 
 """___DATALOADER___"""
@@ -164,39 +163,7 @@ class ConvolutionNetwork(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
-        # 64x64
-        # print(x.shape)
-        x = self.conv0(x)
-        x = self.act(x)
-        x = self.maxpool(x)
 
-        # 31x31
-        # print(x.shape)
-        x = self.conv1(x)
-        x = self.act(x)
-        x = self.maxpool(x)
-
-        # 15x15
-        # print(x.shape)
-        x = self.conv2(x)
-        x = self.act(x)
-        x = self.maxpool(x)
-
-        # 7x7
-        x = self.conv3(x)
-        x = self.act(x)
-        x = self.maxpool(x)
-
-        # 3x3
-        # print(x.shape)
-
-        x = self.adaptive(x)
-        x = self.flatten(x)
-        x = self.linear1(x)
-        x = self.act(x)
-        x = self.linear2(x)
-        x = self.softmax(x)
-        # print(x.shape)
 
         return x
 
