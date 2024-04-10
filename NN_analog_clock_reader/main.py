@@ -49,6 +49,7 @@ def show_8_samples(dataset, size, start):
     plt.show()
 # function for displaying 8 photos after transformation
 
+
 class CustomDataset(Dataset):
     def __init__(self, images, labels, transform=None):
         self.images = images
@@ -67,6 +68,7 @@ class CustomDataset(Dataset):
 
         return image, label
 # My custom dataset class
+
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
@@ -87,7 +89,6 @@ for file in files:
         image_path = os.path.join(image_dir, file)  # create directory path
         img = cv.imread(image_path)
         img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
-        # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
         images.append(img)
 
 
@@ -114,62 +115,53 @@ dataloader = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, sh
 
 
 """___MODEL___"""
-class ShallowNetwork(nn.Module):
-    def __init__(self):
-        super(ShallowNetwork, self).__init__()
-        self.sharpen_kernel = torch.tensor([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], dtype=torch.float32).unsqueeze(
-            0).unsqueeze(0)
-        self.conv = nn.Conv2d(in_channels=1, out_channels=1, kernel_size=3, padding=0)
-        self.conv.weight.data = self.sharpen_kernel
-        self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear((resizeVal - 2) * (resizeVal - 2), 256)
-        self.linear2 = nn.Linear(256, 60)
-        self.linear3 = nn.Linear(60, 1)
-        self.act = nn.ReLU()
-        self.outF = nn.ReLU()
-
-    def forward(self, x):
-        # plt.imshow(np.transpose(x[0].numpy(), (1, 2, 0)))
-        # plt.axis('off')
-        # plt.show()
-        x = self.conv(x)
-        # plt.imshow(np.transpose(x[0].detach().numpy(), (1, 2, 0)))
-        # plt.axis('off')
-        # plt.show()
-        x = self.flatten(x)
-        x = self.linear1(x)
-        x = self.act(x)
-        x = self.linear2(x)
-        x = self.act(x)
-        x = self.linear3(x)
-        x = self.outF(x)
-        return x
 
 
 class ConvolutionNetwork(nn.Module):
     def __init__(self):
         super(ConvolutionNetwork, self).__init__()
-        self.act = nn.ReLU()
+        self.actF = nn.ReLU()
         self.maxpool = nn.MaxPool2d(2, 2)
-        self.conv0 = nn.Conv2d(1, 32, 3, stride=1, padding=0)
-        self.conv1 = nn.Conv2d(32, 64, 3, stride=1, padding=0)
-        self.conv2 = nn.Conv2d(64, 64, 3, stride=1, padding=0)
-        self.conv3 = nn.Conv2d(64, 64, 3, stride=1, padding=0)
-
-        self.adaptive = nn.AdaptiveAvgPool2d((1, 1))
-        self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear(64, 32)
-        self.linear2 = nn.Linear(32, 12)
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, x):
+        #                       3-channels    64 filters     kernel = 3 stride = 1  pad = 0
+        self.conv0 = nn.Conv2d(3, 64, 3, 1, 0)
+        self.conv1 = nn.Conv2d(64, 64, 3, 1, 0)
 
+        self.flatten = nn.Flatten()
+        # full connected feed forward
+
+        self.fc1 = nn.Linear(12544, 512)
+        self.fc2 = nn.Linear(512, 72)
+
+    def forward(self, x):
+        x = self.conv0(x)
+        x = self.actF(x)
+        x = self.maxpool(x)
+
+        print(x.shape)
+
+        x = self.conv1(x)
+        x = self.actF(x)
+        x = self.maxpool(x)
+
+        print(x.shape)
+
+        x = self.flatten(x)
+
+        print(x.shape)
+
+        x = self.fc1(x)
+        x = self.actF(x)
+
+        x = self.fc2(x)
+        x = self.softmax(x)
 
         return x
 
-learning_rate = 0.05
-# loss_fn = nn.CrossEntropyLoss()
-loss_fn = nn.MSELoss()
+learning_rate = 0.01
+loss_fn = nn.CrossEntropyLoss()
+# loss_fn = nn.MSELoss()
 
 # model = ShallowNetwork()
 model = ConvolutionNetwork()
