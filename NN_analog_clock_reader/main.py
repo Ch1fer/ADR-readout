@@ -8,7 +8,6 @@ import cv2 as cv
 import os
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-import numpy as np
 
 
 def show_8_samples(dataset, size, start):
@@ -70,9 +69,13 @@ class CustomDataset(Dataset):
 # My custom dataset class
 
 
+# Use CUDA
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f'Using device: {device}')
+
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 1000
+countsOfRows = 10000
 resizeVal = 48
 
 
@@ -95,23 +98,29 @@ for file in files:
 labels = pd.read_csv(label_dir, nrows=countsOfRows)  # Load labels
 labels = torch.tensor(labels.values, dtype=torch.float32)  # transform to tensor
 
-X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.3, random_state=12)
-# dividing the dataset into training and test
+X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.4, random_state=12)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=23)
+
+# dividing the dataset into training, test and validation
 
 transform = tv.transforms.ToTensor()
 datasetTrain = CustomDataset(X_train, y_train, transform=transform)  # Create train dataset
 datasetTest = CustomDataset(X_test, y_test, transform=transform)  # Create test dataset
+datasetValidate = CustomDataset(X_val, y_val, transform=transform)  # Create validate dataset
 
 print(f"train: {len(datasetTrain)}")
 print(f"test: {len(datasetTest)}")
+print(f"validate: {len(datasetValidate)}")
 
 
-show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
+# show_8_samples(datasetTrain, countsOfRows, 0)  # displays 8 images starting from the index "start"
 
 
 """___DATALOADER___"""
 batch_size = 16
-dataloader = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True, drop_last=True)
+dataloader_train = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True, drop_last=False)
+dataloader_valid = torch.utils.data.DataLoader(datasetValidate, batch_size=batch_size, shuffle=True, drop_last=False)
+dataloader_test = torch.utils.data.DataLoader(datasetTest, batch_size=batch_size, shuffle=True, drop_last=False)
 
 
 """___MODEL___"""
@@ -125,27 +134,29 @@ class ConvolutionNetwork(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
         #                       3-channels    64 filters     kernel = 3 stride = 1  pad = 0
-        self.conv0 = nn.Conv2d(3, 64, 3, 1, 0)
-        self.conv1 = nn.Conv2d(64, 64, 3, 1, 0)
-        self.conv2 = nn.Conv2d(64, 128, 3, 1, 0)
+        self.conv0 = nn.Conv2d(3, 16, 3, 1, 0)
+        self.conv1 = nn.Conv2d(16, 32, 3, 1, 0)
+        self.conv2 = nn.Conv2d(32, 64, 3, 1, 0)
 
         self.flatten = nn.Flatten()
         # full connected feed forward
 
-        self.fc1 = nn.Linear(2048, 512)
-        self.fc2 = nn.Linear(512, 72)
+        self.fc1 = nn.Linear(1024, 256)
+        self.fc2 = nn.Linear(256, 64)
+        self.fc3 = nn.Linear(64, 12)
 
     def forward(self, x):
         x = self.conv0(x)
-        x = self.actF(x)
+        # x = self.actF(x)
         x = self.maxpool(x)
 
+
         x = self.conv1(x)
-        x = self.actF(x)
+        # x = self.actF(x)
         x = self.maxpool(x)
 
         x = self.conv2(x)
-        x = self.actF(x)
+        # x = self.actF(x)
         x = self.maxpool(x)
         # print(x.shape)
         x = self.flatten(x)
@@ -154,64 +165,85 @@ class ConvolutionNetwork(nn.Module):
         x = self.actF(x)
 
         x = self.fc2(x)
+        x = self.actF(x)
+
+        x = self.fc3(x)
         x = self.softmax(x)
 
         return x
+
 
 learning_rate = 0.05
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.MSELoss()
 
 # model = ShallowNetwork()
-model = ConvolutionNetwork()
+model = ConvolutionNetwork().to(device)
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 
 """___TRAINING___"""
 epochs = 100
+train_stats = [[], []]
+validate_stats = [[], []]
+
 
 for epoch in range(epochs):
-    loss_val = 0
-    for img, label in dataloader:
+    loss_train = 0
+    loss_valid = 0
+    for img, label in dataloader_train:
         optimizer.zero_grad()
-        predict = model(img)
 
-        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12)  # create hot tensor for hours
-        minuteOneHot = nn.functional.one_hot(label[:, 1].long(), 60)  # create hot tensor for minutes
-        labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=1)  # combining minutes and hours into one output tensor
+        predict = model(img.to(device))
+        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
 
-        loss = loss_fn(predict, labelOneHot.float())
+        loss = loss_fn(predict, hourOneHot.float())
         loss.backward()
         optimizer.step()
 
-        loss_val += loss.item()
+        loss_train += loss.item()
 
-    print(loss_val / len(dataloader))
+    avg_loss_train = loss_train / len(dataloader_train)
 
+    train_stats[0].append(avg_loss_train)
+    train_stats[1].append(epoch)
+    print(f"epoch: [{epoch}/{epochs}], loss: {avg_loss_train}")
+
+    if epoch % 3 == 0:
+        for img, label in dataloader_valid:
+            predict = model(img.to(device))
+            hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
+
+            loss = loss_fn(predict, hourOneHot.float())
+
+            loss_valid += loss.item()
+
+        avg_loss_valid = loss_valid / len(dataloader_valid)
+
+        validate_stats[0].append(avg_loss_valid)
+        validate_stats[1].append(epoch)
+
+plt.plot(train_stats[1], train_stats[0], linestyle='-', color='blue', label='train_data')
+plt.plot(validate_stats[1], validate_stats[0], linestyle='--', color='green', label='valid_data')
+plt.xlabel('epochs')
+plt.ylabel('loss')
+plt.grid(True)
+plt.show()
 
 """___TESTING___"""
 
 sizeTest = len(datasetTest)
 countCorrect = 0
 
-for img, label in datasetTest:
-    predict = model(img)
-
-    hourOneHot = nn.functional.one_hot(label[0].long(), 12)  # create hot tensor for hours
+for img, label in dataloader_test:
+    predict = model(img.to(device))
+    hourOneHot = nn.functional.one_hot(label[0][0].long(), 12).to(device)  # create hot tensor for hours
     hourOneHot = hourOneHot.type(torch.float)
-    minuteOneHot = nn.functional.one_hot(label[1].long(), 60)  # create hot tensor for minutes
-    minuteOneHot = minuteOneHot.type(torch.float)
-
-    labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=0)  # combining minutes and hours into one hot label tensor
 
     hourPredict = predict[0][:12]  # 12 classes for hours
     hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
-    minutePredict = predict[0][12:]  # 60 classes for minutes
-    minutePredict = minutePredict == minutePredict.max()  # replace the max value with 1, and all other values with 0
 
-    predictOneHot = torch.cat((minutePredict.float(), hourPredict.float()), dim=0)
-
-    countCorrect += (torch.all(predictOneHot == labelOneHot)).item()
+    countCorrect += (torch.all(hourPredict == hourOneHot)).item()
 
 
 accuracy = countCorrect / sizeTest
