@@ -231,7 +231,6 @@ plt.grid(True)
 plt.show()
 
 """___TESTING___"""
-
 sizeTest = len(datasetTest)
 countCorrect = 0
 
