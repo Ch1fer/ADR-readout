@@ -132,7 +132,6 @@ class ConvolutionNetwork(nn.Module):
         self.actF = nn.ReLU()
         self.maxpool = nn.MaxPool2d(2, 2)
         self.softmax = nn.Softmax(dim=1)
-
         #                       3-channels    64 filters     kernel = 3 stride = 1  pad = 0
         self.conv0 = nn.Conv2d(3, 16, 3, 1, 0)
         self.conv1 = nn.Conv2d(16, 32, 3, 1, 0)
@@ -140,7 +139,6 @@ class ConvolutionNetwork(nn.Module):
 
         self.flatten = nn.Flatten()
         # full connected feed forward
-
         self.fc1 = nn.Linear(1024, 256)
         self.fc2 = nn.Linear(256, 64)
         self.fc3 = nn.Linear(64, 12)
@@ -149,7 +147,6 @@ class ConvolutionNetwork(nn.Module):
         x = self.conv0(x)
         # x = self.actF(x)
         x = self.maxpool(x)
-
 
         x = self.conv1(x)
         # x = self.actF(x)
@@ -173,7 +170,7 @@ class ConvolutionNetwork(nn.Module):
         return x
 
 
-learning_rate = 0.05
+learning_rate = 0.01
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.MSELoss()
 
@@ -223,10 +220,11 @@ for epoch in range(epochs):
         validate_stats[0].append(avg_loss_valid)
         validate_stats[1].append(epoch)
 
-plt.plot(train_stats[1], train_stats[0], linestyle='-', color='blue', label='train_data')
-plt.plot(validate_stats[1], validate_stats[0], linestyle='--', color='green', label='valid_data')
+plt.plot(train_stats[1], train_stats[0], linestyle='-', color='gold', linewidth=2,  label='train_data')
+plt.plot(validate_stats[1], validate_stats[0], linestyle='-', color='red', linewidth=2, label='valid_data')
 plt.xlabel('epochs')
 plt.ylabel('loss')
+plt.legend()
 plt.grid(True)
 plt.show()
 
