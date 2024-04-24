@@ -8,8 +8,8 @@ import cv2 as cv
 import os
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-
-
+import torch.nn.init as init
+import numpy as np
 def show_8_samples(dataset, size, start):
     if size <= start + 8:
         print("wrong start!")
@@ -75,31 +75,33 @@ print(f'Using device: {device}')
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 10000
-resizeVal = 48
+countsOfRows = 20000
+resizeVal = 32
 
 
 """___PREPARE_DATA_AND_TRANSFORM___"""
 files = os.listdir(image_dir)  # Load images
 images = []
 fileCounter = 0
-for file in files:
+for file in sorted(files, key=lambda x: int(x.split('.')[0])):
     if fileCounter >= countsOfRows:
         break
     fileCounter += 1
 
     if file.endswith('.jpg'):
         image_path = os.path.join(image_dir, file)  # create directory path
+        print(image_path)
         img = cv.imread(image_path)
         img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
+        # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
         images.append(img)
 
 
 labels = pd.read_csv(label_dir, nrows=countsOfRows)  # Load labels
 labels = torch.tensor(labels.values, dtype=torch.float32)  # transform to tensor
 
-X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.4, random_state=12)
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=23)
+X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.4, random_state=41)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=41)
 
 # dividing the dataset into training, test and validation
 
@@ -117,7 +119,7 @@ print(f"validate: {len(datasetValidate)}")
 
 
 """___DATALOADER___"""
-batch_size = 16
+batch_size = 32
 dataloader_train = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True, drop_last=False)
 dataloader_valid = torch.utils.data.DataLoader(datasetValidate, batch_size=batch_size, shuffle=True, drop_last=False)
 dataloader_test = torch.utils.data.DataLoader(datasetTest, batch_size=batch_size, shuffle=True, drop_last=False)
@@ -129,58 +131,78 @@ dataloader_test = torch.utils.data.DataLoader(datasetTest, batch_size=batch_size
 class ConvolutionNetwork(nn.Module):
     def __init__(self):
         super(ConvolutionNetwork, self).__init__()
-        self.actF = nn.ReLU()
-        self.maxpool = nn.MaxPool2d(2, 2)
-        self.softmax = nn.Softmax(dim=1)
-        #                       3-channels    64 filters     kernel = 3 stride = 1  pad = 0
-        self.conv0 = nn.Conv2d(3, 16, 3, 1, 0)
-        self.conv1 = nn.Conv2d(16, 32, 3, 1, 0)
-        self.conv2 = nn.Conv2d(32, 64, 3, 1, 0)
 
-        self.flatten = nn.Flatten()
-        # full connected feed forward
-        self.fc1 = nn.Linear(1024, 256)
-        self.fc2 = nn.Linear(256, 64)
-        self.fc3 = nn.Linear(64, 12)
+        self.conv1 = nn.Conv2d(3, 16, 3, 1)
+        self.conv2 = nn.Conv2d(16, 32, 3, 1)
+        self.conv3 = nn.Conv2d(32, 64, 3, 1)
+        self.conv4 = nn.Conv2d(64, 128, 3, 1)
+
+        self.maxpool = nn.MaxPool2d(2,2)
+        self.act = nn.ReLU()
+
+        self.flat = nn.Flatten()
+
+        self.linear1 = nn.Linear(256, 12)
+
+        self.outF = nn.Softmax(dim=1)
+        self.dropout = nn.Dropout(p=0.7)
 
     def forward(self, x):
-        x = self.conv0(x)
-        # x = self.actF(x)
-        x = self.maxpool(x)
-
         x = self.conv1(x)
-        # x = self.actF(x)
+        x = self.act(x)
         x = self.maxpool(x)
 
         x = self.conv2(x)
-        # x = self.actF(x)
+        x = self.act(x)
         x = self.maxpool(x)
-        # print(x.shape)
-        x = self.flatten(x)
 
-        x = self.fc1(x)
-        x = self.actF(x)
+        x = self.conv3(x)
+        x = self.act(x)
+        x = self.maxpool(x)
 
-        x = self.fc2(x)
-        x = self.actF(x)
-
-        x = self.fc3(x)
-        x = self.softmax(x)
+        x = self.flat(x)
+        x = self.dropout(x)
+        x = self.linear1(x)
+        x = self.outF(x)
 
         return x
 
 
-learning_rate = 0.01
+class ShallowNetwork(nn.Module):
+    def __init__(self):
+        super(ShallowNetwork, self).__init__()
+
+        self.flatten = nn.Flatten()
+        self.linear1 = nn.Linear(resizeVal * resizeVal, 100)
+        self.linear2 = nn.Linear(100, 12)
+        # self.linear3 = nn.Linear(128, 12)
+        self.act = nn.ReLU()
+        self.outF = nn.Softmax(dim=1)
+        self.dropout = nn.Dropout(p=0.7)
+
+    def forward(self, x):
+        x = self.flatten(x)
+        x = self.linear1(x)
+        x = self.act(x)
+        x = self.dropout(x)
+
+        x = self.linear2(x)
+        x = self.outF(x)
+
+        return x
+
+learning_rate = 0.05
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.MSELoss()
 
 # model = ShallowNetwork()
 model = ConvolutionNetwork().to(device)
+# model = ShallowNetwork().to(device)
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 
 """___TRAINING___"""
-epochs = 100
+epochs = 10
 train_stats = [[], []]
 validate_stats = [[], []]
 
@@ -204,7 +226,7 @@ for epoch in range(epochs):
 
     train_stats[0].append(avg_loss_train)
     train_stats[1].append(epoch)
-    print(f"epoch: [{epoch}/{epochs}], loss: {avg_loss_train}")
+    print(f"epoch: [{epoch + 1}/{epochs}], loss: {avg_loss_train}")
 
     if epoch % 3 == 0:
         for img, label in dataloader_valid:
@@ -237,7 +259,7 @@ for img, label in dataloader_test:
     hourOneHot = nn.functional.one_hot(label[0][0].long(), 12).to(device)  # create hot tensor for hours
     hourOneHot = hourOneHot.type(torch.float)
 
-    hourPredict = predict[0][:12]  # 12 classes for hours
+    hourPredict = predict[0]  # 12 classes for hours
     hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
 
     countCorrect += (torch.all(hourPredict == hourOneHot)).item()
