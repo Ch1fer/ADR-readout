@@ -75,7 +75,7 @@ print(f'Using device: {device}')
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 20000
+countsOfRows = 10000
 resizeVal = 32
 
 
@@ -93,7 +93,7 @@ for file in sorted(files, key=lambda x: int(x.split('.')[0])):
         print(image_path)
         img = cv.imread(image_path)
         img = cv.resize(img, (resizeVal, resizeVal), interpolation=cv.INTER_AREA)  # resize image
-        # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
         images.append(img)
 
 
@@ -119,15 +119,13 @@ print(f"validate: {len(datasetValidate)}")
 
 
 """___DATALOADER___"""
-batch_size = 32
-dataloader_train = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True, drop_last=False)
-dataloader_valid = torch.utils.data.DataLoader(datasetValidate, batch_size=batch_size, shuffle=True, drop_last=False)
-dataloader_test = torch.utils.data.DataLoader(datasetTest, batch_size=batch_size, shuffle=True, drop_last=False)
+batch_size = 16
+dataloader_train = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True, drop_last=True)
+dataloader_valid = torch.utils.data.DataLoader(datasetValidate, batch_size=batch_size, shuffle=True, drop_last=True)
+dataloader_test = torch.utils.data.DataLoader(datasetTest, batch_size=batch_size, shuffle=True, drop_last=True)
 
 
 """___MODEL___"""
-
-
 class ConvolutionNetwork(nn.Module):
     def __init__(self):
         super(ConvolutionNetwork, self).__init__()
@@ -173,12 +171,12 @@ class ShallowNetwork(nn.Module):
         super(ShallowNetwork, self).__init__()
 
         self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear(resizeVal * resizeVal, 100)
-        self.linear2 = nn.Linear(100, 12)
+        self.linear1 = nn.Linear(resizeVal * resizeVal, 200)
+        self.linear2 = nn.Linear(200, 12)
         # self.linear3 = nn.Linear(128, 12)
-        self.act = nn.ReLU()
+        self.act = nn.Sigmoid()
         self.outF = nn.Softmax(dim=1)
-        self.dropout = nn.Dropout(p=0.7)
+        self.dropout = nn.Dropout(p=0.5)
 
     def forward(self, x):
         x = self.flatten(x)
@@ -191,18 +189,18 @@ class ShallowNetwork(nn.Module):
 
         return x
 
-learning_rate = 0.05
+learning_rate = 0.01
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.MSELoss()
 
-# model = ShallowNetwork()
-model = ConvolutionNetwork().to(device)
-# model = ShallowNetwork().to(device)
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+# model = ConvolutionNetwork().to(device)
+model = ShallowNetwork().to(device)
+# optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adam(model.parameters())
 
 
 """___TRAINING___"""
-epochs = 10
+epochs = 20
 train_stats = [[], []]
 validate_stats = [[], []]
 
@@ -215,6 +213,8 @@ for epoch in range(epochs):
 
         predict = model(img.to(device))
         hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
+        # tolerance_tensor = torch.where((predict >= 0.5) & (hourOneHot == 1) | (predict < 0.5) & (hourOneHot == 0), predict, hourOneHot)
+        # tolerance_tensor = torch.where((predict < 0.5) & (hourOneHot == 0) | (predict < 0.5) & (hourOneHot == 0), predict, tolerance_tensor).to(device)
 
         loss = loss_fn(predict, hourOneHot.float())
         loss.backward()
@@ -234,7 +234,6 @@ for epoch in range(epochs):
             hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
 
             loss = loss_fn(predict, hourOneHot.float())
-
             loss_valid += loss.item()
 
         avg_loss_valid = loss_valid / len(dataloader_valid)
@@ -255,16 +254,15 @@ sizeTest = len(datasetTest)
 countCorrect = 0
 
 for img, label in dataloader_test:
-    predict = model(img.to(device))
-    hourOneHot = nn.functional.one_hot(label[0][0].long(), 12).to(device)  # create hot tensor for hours
-    hourOneHot = hourOneHot.type(torch.float)
-
-    hourPredict = predict[0]  # 12 classes for hours
-    hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
-
-    countCorrect += (torch.all(hourPredict == hourOneHot)).item()
+    for i in range(len(img)):
+        predict = model(img.to(device))
+        hourOneHot = nn.functional.one_hot(label[i][0].long(), 12).to(device)  # create hot tensor for hours
+        hourOneHot = hourOneHot.type(torch.float)
+        hourPredict = predict[i]  # 12 classes for hours
+        hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
+        countCorrect += (torch.all(hourPredict == hourOneHot)).item()
 
 
 accuracy = countCorrect / sizeTest
 print(f"{countCorrect} / {sizeTest}")
-print(accuracy)
+print(f"accuracy: {accuracy}")
