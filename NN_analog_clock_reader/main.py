@@ -75,7 +75,7 @@ print(f'Using device: {device}')
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
-countsOfRows = 10000
+countsOfRows = 20000
 resizeVal = 32
 
 
@@ -119,7 +119,7 @@ print(f"validate: {len(datasetValidate)}")
 
 
 """___DATALOADER___"""
-batch_size = 16
+batch_size = 32
 dataloader_train = torch.utils.data.DataLoader(datasetTrain, batch_size=batch_size, shuffle=True, drop_last=True)
 dataloader_valid = torch.utils.data.DataLoader(datasetValidate, batch_size=batch_size, shuffle=True, drop_last=True)
 dataloader_test = torch.utils.data.DataLoader(datasetTest, batch_size=batch_size, shuffle=True, drop_last=True)
@@ -130,20 +130,20 @@ class ConvolutionNetwork(nn.Module):
     def __init__(self):
         super(ConvolutionNetwork, self).__init__()
 
-        self.conv1 = nn.Conv2d(3, 16, 3, 1)
+        self.conv1 = nn.Conv2d(1, 16, 3, 1)
         self.conv2 = nn.Conv2d(16, 32, 3, 1)
         self.conv3 = nn.Conv2d(32, 64, 3, 1)
-        self.conv4 = nn.Conv2d(64, 128, 3, 1)
 
         self.maxpool = nn.MaxPool2d(2,2)
         self.act = nn.ReLU()
 
         self.flat = nn.Flatten()
 
-        self.linear1 = nn.Linear(256, 12)
+        self.linear1 = nn.Linear(256, 100)
+        self.linear2 = nn.Linear(100, 12)
 
         self.outF = nn.Softmax(dim=1)
-        self.dropout = nn.Dropout(p=0.7)
+        self.dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -161,7 +161,8 @@ class ConvolutionNetwork(nn.Module):
         x = self.flat(x)
         x = self.dropout(x)
         x = self.linear1(x)
-        x = self.outF(x)
+        x = self.act(x)
+        x = self.linear2(x)
 
         return x
 
@@ -193,14 +194,14 @@ learning_rate = 0.01
 loss_fn = nn.CrossEntropyLoss()
 # loss_fn = nn.MSELoss()
 
-# model = ConvolutionNetwork().to(device)
-model = ShallowNetwork().to(device)
+model = ConvolutionNetwork().to(device)
+# model = ShallowNetwork().to(device)
 # optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 optimizer = torch.optim.Adam(model.parameters())
 
 
 """___TRAINING___"""
-epochs = 20
+epochs = 50
 train_stats = [[], []]
 validate_stats = [[], []]
 
