@@ -134,16 +134,16 @@ class ConvolutionNetwork(nn.Module):
         self.conv2 = nn.Conv2d(16, 32, 3, 1)
         self.conv3 = nn.Conv2d(32, 64, 3, 1)
 
-        self.maxpool = nn.MaxPool2d(2,2)
+        self.maxpool = nn.MaxPool2d(2, 2)
         self.act = nn.ReLU()
 
         self.flat = nn.Flatten()
 
-        self.linear1 = nn.Linear(256, 100)
-        self.linear2 = nn.Linear(100, 12)
+        self.linear1 = nn.Linear(1152, 100)
+        self.linear2 = nn.Linear(100, 72)
 
         self.outF = nn.Softmax(dim=1)
-        self.dropout = nn.Dropout(p=0.2)
+        self.dropout = nn.Dropout(p=0.3)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -154,41 +154,16 @@ class ConvolutionNetwork(nn.Module):
         x = self.act(x)
         x = self.maxpool(x)
 
-        x = self.conv3(x)
-        x = self.act(x)
-        x = self.maxpool(x)
-
         x = self.flat(x)
         x = self.dropout(x)
         x = self.linear1(x)
         x = self.act(x)
         x = self.linear2(x)
 
-        return x
-
-
-class ShallowNetwork(nn.Module):
-    def __init__(self):
-        super(ShallowNetwork, self).__init__()
-
-        self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear(resizeVal * resizeVal, 200)
-        self.linear2 = nn.Linear(200, 12)
-        # self.linear3 = nn.Linear(128, 12)
-        self.act = nn.Sigmoid()
-        self.outF = nn.Softmax(dim=1)
-        self.dropout = nn.Dropout(p=0.5)
-
-    def forward(self, x):
-        x = self.flatten(x)
-        x = self.linear1(x)
-        x = self.act(x)
-        x = self.dropout(x)
-
-        x = self.linear2(x)
-        x = self.outF(x)
+        # x = self.outF(x)
 
         return x
+
 
 learning_rate = 0.01
 loss_fn = nn.CrossEntropyLoss()
@@ -201,7 +176,7 @@ optimizer = torch.optim.Adam(model.parameters())
 
 
 """___TRAINING___"""
-epochs = 50
+epochs = 40
 train_stats = [[], []]
 validate_stats = [[], []]
 
@@ -213,11 +188,12 @@ for epoch in range(epochs):
         optimizer.zero_grad()
 
         predict = model(img.to(device))
-        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
-        # tolerance_tensor = torch.where((predict >= 0.5) & (hourOneHot == 1) | (predict < 0.5) & (hourOneHot == 0), predict, hourOneHot)
-        # tolerance_tensor = torch.where((predict < 0.5) & (hourOneHot == 0) | (predict < 0.5) & (hourOneHot == 0), predict, tolerance_tensor).to(device)
 
-        loss = loss_fn(predict, hourOneHot.float())
+        hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
+        minuteOneHot = nn.functional.one_hot(label[:, 1].long(), 60) .to(device)
+        labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=1)  # combining minutes and hours into one output tensor
+
+        loss = loss_fn(predict, labelOneHot.float())
         loss.backward()
         optimizer.step()
 
@@ -233,8 +209,10 @@ for epoch in range(epochs):
         for img, label in dataloader_valid:
             predict = model(img.to(device))
             hourOneHot = nn.functional.one_hot(label[:, 0].long(), 12).to(device)
+            minuteOneHot = nn.functional.one_hot(label[:, 1].long(), 60).to(device)
+            labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=1)  # combining minutes and hours into one output tensor
 
-            loss = loss_fn(predict, hourOneHot.float())
+            loss = loss_fn(predict, labelOneHot.float())
             loss_valid += loss.item()
 
         avg_loss_valid = loss_valid / len(dataloader_valid)
@@ -255,13 +233,35 @@ sizeTest = len(datasetTest)
 countCorrect = 0
 
 for img, label in dataloader_test:
-    for i in range(len(img)):
-        predict = model(img.to(device))
+    predict = model(img.to(device))
+    for i in range(len(predict)):
         hourOneHot = nn.functional.one_hot(label[i][0].long(), 12).to(device)  # create hot tensor for hours
-        hourOneHot = hourOneHot.type(torch.float)
-        hourPredict = predict[i]  # 12 classes for hours
+        minuteOneHot = nn.functional.one_hot(label[i][1].long(), 60).to(device)
+        labelOneHot = torch.cat((hourOneHot, minuteOneHot), dim=0)  # combining minutes and hours into one output tensor
+        labelOneHot = labelOneHot.type(torch.float)
+        # if i >= len(predict) - 5:
+        #     print(f"TESTING labelOneHot: {labelOneHot}")
+
+        hourPredict = predict[i][:12]  # 12 classes for hours
         hourPredict = hourPredict == hourPredict.max()  # replace the max value with 1, and all other values with 0
-        countCorrect += (torch.all(hourPredict == hourOneHot)).item()
+        hourPredict = hourPredict.type(torch.float)
+
+        minutePredict = predict[i][12:]  # 60 classes for minutes
+        minutePredict = minutePredict == minutePredict.max()  # replace the max value with 1, and all other values with 0
+        minutePredict = minutePredict.type(torch.float)
+
+        predictOneHot = torch.cat((minutePredict, hourPredict), dim=0)
+
+        # if i >= len(predict) - 5:
+        #     print(f"TESTING predict[i]: {predict[i]}")
+        # fire_hour = torch.argmax(hourPredict).item()
+
+        if (torch.all(predictOneHot == labelOneHot)).item() == 1:
+            countCorrect += 1
+        # else:
+        #     plt.imshow(img[i].permute(1, 2, 0).numpy())
+        #     plt.xlabel(f"котра година: {label[i][0]}, нейронка каже {fire_hour}")
+        #     plt.show()
 
 
 accuracy = countCorrect / sizeTest
