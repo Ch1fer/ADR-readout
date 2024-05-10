@@ -252,7 +252,7 @@ epochs = 100
 train_stats = [[], []]
 validate_stats = [[], []]
 
-hour_weight_loss = 1
+hour_weight_loss = 20
 minute_weight_loss = 1
 
 for epoch in range(epochs):
