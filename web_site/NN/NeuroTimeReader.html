@@ -4,33 +4,41 @@
     <meta charset="UTF-8">
     <title>NeuroTimeReader</title>
     <link rel="stylesheet" href="css/NeuroTimeReader.css">
+    <script src="js/DragAndDrop.js"></script>
 </head>
 <body>
-    <header>
-        <div class="clock-struct">
-            <div class = "clock">
-                <div class="hour">
-                    <div class="hours"></div>
-                </div>
-
-                <div class="minute">
-                    <div class="minutes"></div>
-                </div>
-
-                <div class="second">
-                    <div class="seconds"></div>
-                </div>
-
+<header>
+    <div class="clock-struct">
+        <div class="clock">
+            <div class="hour">
+                <div class="hours"></div>
             </div>
 
-            <img src="image/arrow.png" alt="arrow" class="arrow">
+            <div class="minute">
+                <div class="minutes"></div>
+            </div>
 
-            <div class = "digital_clock"></div>
-            
+            <div class="second">
+                <div class="seconds"></div>
+            </div>
+
         </div>
-    </header>
 
+        <img src="image/arrow.png" alt="arrow" class="arrow">
 
-    <script src="js/NeuroTimeReader.js"></script>
+        <div class="digital_clock"></div>
+
+    </div>
+</header>
+
+<script src="js/NeuroTimeReader.js"></script>
+
+<div class="model-block">
+
+</div>
+<div id="dropArea" ondragenter="dragEnterHandler(event)" ondragover="dragOverHandler(event)"
+     ondrop="dropHandler(event)">
+    Drop your image with clock here
+</div>
 </body>
 </html>

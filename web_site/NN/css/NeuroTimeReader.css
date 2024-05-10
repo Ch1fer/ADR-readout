@@ -14,13 +14,14 @@
 
 body{
     background-color: #091921;
-    display: flex;
+
     width: 100%;
     min-width: 100vh;
 }
 header{
-    width: 96%;
+    width: 100%;
     justify-content: center;
+    border: 5px solid red;
 }
 
 .arrow{
@@ -155,4 +156,35 @@ header{
         z-index: 12;
         border-radius: 6px 6px 0 0;
     }
+}
+
+#dropArea {
+    width: 300px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 200px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    justify-content: center;
+}
+
+.model-block{
+    display: flex;
+    justify-content: center;
+}
+
+#dropArea:active{
+    background-color: rgba(255, 254, 254, 0);
+}
+
+button{
+    color: white;
+}
+
+input{
+    color: white;
 }
