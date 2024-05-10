@@ -152,7 +152,6 @@ for img, label in dataloader_test:
         #     plt.xlabel(f"котра година: {label[i][0]} : {label[i][1]} , нейронка каже {fire_hour}: {float(minute[i])}")
         #     plt.show()
 
-torch.save(model.state_dict(), 'my_model.pth')
 accuracy = countCorrect / sizeTest
 print(f"{countCorrect} / {sizeTest}")
 print(f"accuracy: {accuracy}")
