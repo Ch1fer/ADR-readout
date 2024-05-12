@@ -6,10 +6,7 @@ import pandas as pd
 import torchvision as tv
 import cv2 as cv
 import os
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-import torch.nn.init as init
-import numpy as np
+
 
 class CustomDataset(Dataset):
     def __init__(self, images, labels, transform=None):
@@ -98,7 +95,7 @@ class CustomModel(nn.Module):
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = CustomModel().to(device)
-model.load_state_dict(torch.load('my_model.pth', map_location=device))
+model.load_state_dict(torch.load('../web_site/NN/server/src/time_prediction_neural_network/model.pth', map_location=device))
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
@@ -155,3 +152,4 @@ for img, label in dataloader_test:
 accuracy = countCorrect / sizeTest
 print(f"{countCorrect} / {sizeTest}")
 print(f"accuracy: {accuracy}")
+

@@ -1,7 +1,11 @@
+from typing import NamedTuple
+
 import torch
 import torch.nn as nn
 import torchvision as tv
 import cv2 as cv
+from pathlib import Path
+from web_site.NN.server.src.utils import get_file_path_in_module
 
 
 class CustomModel(nn.Module):
@@ -70,24 +74,48 @@ class CustomModel(nn.Module):
         return hour, minute
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = CustomModel().to(device)
-model.load_state_dict(torch.load('my_model.pth', map_location=device))
+class Time(NamedTuple):
+    hour: int
+    minute: int
 
 
-image_dir = 'data/images/41835.jpg'
+def get_device() -> torch.device:
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    return device
 
-img = cv.imread(image_dir)
-img = cv.resize(img, (100, 100), interpolation=cv.INTER_AREA)  # resize image
-img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
 
-transform = tv.transforms.ToTensor()
+def implement_model(trained_model: Path, device: torch.device) -> CustomModel:
+    model = CustomModel().to(device)
+    model.load_state_dict(torch.load(trained_model, map_location=device))
+    return model
 
-img = transform(img)
-img = img.unsqueeze(0)
 
-hour, minute = model(img.to(device))
-hour = torch.argmax(hour).item()
-minute = round(minute.item())
+def process_image(image: Path) -> torch.Tensor:
+    uploaded_image = cv.imread(str(image))
+    resized_image = cv.resize(uploaded_image, (100, 100), interpolation=cv.INTER_AREA)  # resize image
+    grey_scale_image = cv.cvtColor(resized_image, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+    transform = tv.transforms.ToTensor()
+    transformed_image = transform(grey_scale_image)
+    processed_image = transformed_image.unsqueeze(0)
+    return processed_image
 
-print(f" {hour} : {minute}")
+
+def predict_time(implemented_model: CustomModel, processed_image: torch.Tensor) -> Time:
+    hour, minute = implemented_model(processed_image.to(get_device()))
+    hour = torch.argmax(hour).item()
+    minute = round(minute.item())
+    predicted_time = Time(hour=hour, minute=minute)
+    return predicted_time
+
+
+def get_prediction(image: Path) -> Time:
+    device = get_device()
+    path_for_model = get_file_path_in_module("model.pth", Path(__file__))
+    model = implement_model(path_for_model, device)
+    processed_image = process_image(image.absolute())
+    prediction_time = predict_time(model, processed_image)
+    return prediction_time
+
+
+if __name__ == "__main__":
+    print((get_prediction(Path("../endpoints/client_files/image")))._asdict())
