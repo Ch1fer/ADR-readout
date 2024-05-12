@@ -6,7 +6,7 @@ import numpy as np
 
 def main(argv):
     ## [load]
-    default_file = 'photo_preprocessing/opencv/assets/clock6.jpg'
+    default_file = 'photo_preprocessing/opencv/assets/clock5.jpg'
     filename = argv[0] if len(argv) > 0 else default_file
 
     # Loads an image
@@ -40,6 +40,9 @@ def main(argv):
     edges = cv.Canny(gray, 50,150)
     lines = cv.HoughLines(edges, 1.5, np.pi / 180, 200)
 
+    height, width = 500, 500
+    result_image = np.zeros((height, width, 3), dtype=np.uint8)
+    
     ## [draw]
     if circles is not None:
         circles = np.uint16(np.around(circles))
@@ -47,12 +50,15 @@ def main(argv):
             center = (i[0], i[1])
             # circle center
             cv.circle(src, center, 1, (0, 100, 100), 3)
+            cv.circle(result_image, center, 1, (0, 100, 100), 3)
             # circle outline
             radius = i[2]
             cv.circle(src, center, radius, (255, 0, 255), 3)
+            cv.circle(result_image, center, radius, (255, 0, 255), 3)
 
     ## [draw]
     if lines is not None:
+               
         for line in lines:
             
             # Convert polar coordinates to Cartesian coordinates
@@ -67,8 +73,10 @@ def main(argv):
             for line in lines:
                 x1, y1, x2, y2 = line[0]
                 cv.line(src, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                cv.line(result_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
     ## [display]
     cv.imshow("detected circles", src)
+    cv.imshow("mask", result_image)
     cv.waitKey(0)
     ## [display]
 
