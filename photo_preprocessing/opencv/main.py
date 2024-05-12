@@ -3,16 +3,15 @@ import cv2 as cv
 import numpy as np
 
 
+
 def main(argv):
     ## [load]
-    default_file = 'assets/clock1.jpg'
+    default_file = 'assets/clock2.jpg'
     filename = argv[0] if len(argv) > 0 else default_file
 
     # Loads an image
     src = cv.imread(cv.samples.findFile(filename), cv.IMREAD_COLOR)
     src = cv.resize(src, (500, 500))
-    
-    
     
     # src = cv.resize(src, (0, 0), fx = 0.4, fy = 0.4)
     # Check if image is loaded fine
