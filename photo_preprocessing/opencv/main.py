@@ -6,7 +6,7 @@ import numpy as np
 
 def main(argv):
     ## [load]
-    default_file = 'photo_preprocessing/opencv/assets/clock1.jpg'
+    default_file = 'photo_preprocessing/opencv/assets/clock6.jpg'
     filename = argv[0] if len(argv) > 0 else default_file
 
     # Loads an image
