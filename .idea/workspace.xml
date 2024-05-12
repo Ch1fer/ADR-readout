@@ -5,7 +5,66 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa74f130-ee9b-4fdb-bdcb-3536ed870d85" name="Changes" comment="Print 100">
-      <change beforePath="$PROJECT_DIR$/NN_analog_clock_reader/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN_analog_clock_reader/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/.idea/web_site.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/client_files/Google Chrome.lnk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/server.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/AUTHORS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/INSTALLER" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/METADATA" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/RECORD" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/REQUESTED" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/WHEEL" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/entry_points.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip-24.0.dist-info/top_level.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_internal/utils/_jaraco_text.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/cachecontrol/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/certifi/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/chardet/codingstatemachinedict.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/chardet/macromanprober.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/chardet/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/chardet/resultdict.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/ansi_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/ansitowin32_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/initialise_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/isatty_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/colorama/tests/winterm_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/distro/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/idna/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/packaging/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/platformdirs/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/pyparsing/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/pyproject_hooks/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/pyproject_hooks/_compat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/pyproject_hooks/_impl.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/pyproject_hooks/_in_process/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/resolvelib/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/rich/_fileno.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/rich/_null_file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/rich/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/tenacity/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/tomli/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/_macos.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/_openssl.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/_ssl_constants.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/_windows.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/truststore/py.typed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/venv/Lib/site-packages/pip/_vendor/urllib3/packages/backports/weakref_finalize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +75,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -27,12 +87,12 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Ch1fer"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Ch1fer&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -57,12 +117,22 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "Python.main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Hajdash/PycharmProjects/ADR-readout"
+    "last_opened_file_path": "D:/node_modules/npm",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -80,6 +150,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1710083665934</updated>
+      <workItem from="1712269283023" duration="1231000" />
+      <workItem from="1715192412993" duration="1641000" />
+      <workItem from="1715194274378" duration="4446000" />
+      <workItem from="1715264778015" duration="1398000" />
+      <workItem from="1715266215886" duration="2651000" />
+      <workItem from="1715288078723" duration="4029000" />
+      <workItem from="1715361060083" duration="7938000" />
     </task>
     <task id="LOCAL-00001" summary="add first file to project">
       <option name="closed" value="true" />
@@ -108,7 +185,11 @@
     <option name="localTasksCounter" value="4" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="add first file to project" />
     <MESSAGE value="Print 100" />
     <option name="LAST_COMMIT_MESSAGE" value="Print 100" />
