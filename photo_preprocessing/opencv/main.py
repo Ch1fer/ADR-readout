@@ -6,7 +6,7 @@ import numpy as np
 
 def main(argv):
     ## [load]
-    default_file = 'assets/clock2.jpg'
+    default_file = 'photo_preprocessing/opencv/assets/clock1.jpg'
     filename = argv[0] if len(argv) > 0 else default_file
 
     # Loads an image
@@ -54,10 +54,8 @@ def main(argv):
     ## [draw]
     if lines is not None:
         for line in lines:
-            rho = 1
-            theta = np.pi/180
-            # Convert polar coordinates to Cartesian coordinates
             
+            # Convert polar coordinates to Cartesian coordinates
             rho = 1
             theta = np.pi / 180
             threshold = 15
