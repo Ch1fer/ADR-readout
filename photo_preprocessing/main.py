@@ -88,5 +88,5 @@ def main(file_path):
 
 
 # example
-if __name__ == "__main__":
-    main("photo_preprocessing/assets/clock1.jpg")
+# if __name__ == "__main__":
+#     main("photo_preprocessing/assets/clock1.jpg")
