@@ -72,22 +72,24 @@ class CustomModel(nn.Module):
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = CustomModel().to(device)
-model.load_state_dict(torch.load('my_model.pth', map_location=device))
+model.load_state_dict(torch.load('NN_analog_clock_reader/my_model.pth', map_location=device))
 
 
-image_dir = 'data/images/41835.jpg'
+# image_dir = 'data/images/41835.jpg'
 
-img = cv.imread(image_dir)
-img = cv.resize(img, (100, 100), interpolation=cv.INTER_AREA)  # resize image
-img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
+def predict(filepath):
+    img = cv.imread(filepath)
+    img = cv.resize(img, (100, 100), interpolation=cv.INTER_AREA)  # resize image
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # transform images to gray scale, only one channel of gray
 
-transform = tv.transforms.ToTensor()
+    transform = tv.transforms.ToTensor()
 
-img = transform(img)
-img = img.unsqueeze(0)
+    img = transform(img)
+    img = img.unsqueeze(0)
 
-hour, minute = model(img.to(device))
-hour = torch.argmax(hour).item()
-minute = round(minute.item())
+    hour, minute = model(img.to(device))
+    hour = torch.argmax(hour).item()
+    minute = round(minute.item())
 
-print(f" {hour} : {minute}")
+    print(f" {hour} : {minute}")
+    return f" {hour} : {minute}"

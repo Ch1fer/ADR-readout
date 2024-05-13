@@ -1,18 +1,17 @@
-import sys
 import os
 import cv2 as cv
 import numpy as np
 
-def main(file_path):
+def draw(file_path):
     ## [deleting output image if exists]
-    folder_path = "photo_preprocessing/result_image"
-    if os.path.exists(folder_path) and os.path.isdir(folder_path):
-        files = os.listdir(folder_path)
+    # folder_path = "photo_preprocessing/result_image"
+    # if os.path.exists(folder_path) and os.path.isdir(folder_path):
+    #     files = os.listdir(folder_path)
         
-        if files is not None:
-            for file in files:
-                file_path = os.path.join(folder_path, file)
-                os.remove(file_path)
+    #     if files is not None:
+    #         for file in files:
+    #             file_path = os.path.join(folder_path, file)
+    #             os.remove(file_path)
     extension = file_path.split('.')[1]
     
     # Loads an image
@@ -47,8 +46,8 @@ def main(file_path):
         for i in circles[0, :]:
             center = (i[0], i[1])
             # circle center
-            cv.circle(src, center, 1, (0, 100, 100), 3)
-            cv.circle(result_image, center, 1, (0, 100, 100), 3)
+            cv.circle(src, center, 5, (0, 100, 100), 3)
+            cv.circle(result_image, center, 5, (0, 100, 100), 3)
             # circle outline
             radius = i[2]
             cv.circle(src, center, radius, (255, 255, 255), 3)
@@ -83,10 +82,10 @@ def main(file_path):
     output_image_path = f"photo_preprocessing/result_image/output_image.{extension}"
     cv.imwrite(output_image_path, result_image)
     
-    print(output_image_path)
+    # print(output_image_path)
     return output_image_path
 
 
 # example
-# if __name__ == "__main__":
-#     main("photo_preprocessing/assets/clock1.jpg")
+if __name__ == "__main__":
+    draw("photo_preprocessing/assets/clock1.jpg")
