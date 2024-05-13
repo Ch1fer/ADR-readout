@@ -5,7 +5,7 @@ import numpy as np
 
 def main(file_path):
     ## [deleting output image if exists]
-    folder_path = "photo_preprocessing/opencv/result_image"
+    folder_path = "photo_preprocessing/result_image"
     if os.path.exists(folder_path) and os.path.isdir(folder_path):
         files = os.listdir(folder_path)
         
@@ -80,7 +80,7 @@ def main(file_path):
     # cv.imshow("mask", result_image)
     # cv.waitKey(0)
     
-    output_image_path = f"photo_preprocessing/opencv/result_image/output_image.{extension}"
+    output_image_path = f"photo_preprocessing/result_image/output_image.{extension}"
     cv.imwrite(output_image_path, result_image)
     
     print(output_image_path)
@@ -88,5 +88,5 @@ def main(file_path):
 
 
 # example
-# if __name__ == "__main__":
-#     main("photo_preprocessing/opencv/assets/clock1.jpg")
+if __name__ == "__main__":
+    main("photo_preprocessing/assets/clock1.jpg")
