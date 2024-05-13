@@ -1,24 +1,24 @@
 import sys
+import os
 import cv2 as cv
 import numpy as np
 
-def main(argv):
-    ## [load]
-    default_file = 'photo_preprocessing/opencv/assets/clock5.jpg'
-    filename = argv[0] if len(argv) > 0 else default_file
-
+def main(file_path):
+    ## [deleting output image if exists]
+    folder_path = "photo_preprocessing/opencv/result_image"
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        files = os.listdir(folder_path)
+        
+        if files is not None:
+            for file in files:
+                file_path = os.path.join(folder_path, file)
+                os.remove(file_path)
+    extension = file_path.split('.')[1]
+    
     # Loads an image
-    src = cv.imread(cv.samples.findFile(filename), cv.IMREAD_COLOR)
+    src = cv.imread(cv.samples.findFile(file_path), cv.IMREAD_COLOR)
     src = cv.resize(src, (500, 500))
     
-    # src = cv.resize(src, (0, 0), fx = 0.4, fy = 0.4)
-    # Check if image is loaded fine
-    if src is None:
-        print ('Error opening image!')
-        print ('Usage: hough_circle.py [image_name -- default ' + default_file + '] \n')
-        return -1
-    ## [load]
-
     ## [convert_to_gray]
     # Convert it to gray
     gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
@@ -76,13 +76,17 @@ def main(argv):
                     cv.line(src, (x1, y1), (x2, y2), (255, 255, 255), 2)
                     cv.line(result_image, (x1, y1), (x2, y2), (255, 255, 255), 2)
     ## [display]
-    cv.imshow("detected circles", src)
-    cv.imshow("mask", result_image)
-    cv.waitKey(0)
-    ## [display]
+    # cv.imshow("detected circles", src)
+    # cv.imshow("mask", result_image)
+    # cv.waitKey(0)
+    
+    output_image_path = f"photo_preprocessing/opencv/result_image/output_image.{extension}"
+    cv.imwrite(output_image_path, result_image)
+    
+    print(output_image_path)
+    return output_image_path
 
-    return 0
 
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
+# example
+# if __name__ == "__main__":
+#     main("photo_preprocessing/opencv/assets/clock1.jpg")
