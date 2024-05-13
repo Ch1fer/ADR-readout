@@ -2,8 +2,6 @@ import sys
 import cv2 as cv
 import numpy as np
 
-
-
 def main(argv):
     ## [load]
     default_file = 'photo_preprocessing/opencv/assets/clock5.jpg'
@@ -53,8 +51,8 @@ def main(argv):
             cv.circle(result_image, center, 1, (0, 100, 100), 3)
             # circle outline
             radius = i[2]
-            cv.circle(src, center, radius, (255, 0, 255), 3)
-            cv.circle(result_image, center, radius, (255, 0, 255), 3)
+            cv.circle(src, center, radius, (255, 255, 255), 3)
+            cv.circle(result_image, center, radius, (255, 255, 255), 3)
 
     ## [draw]
     if lines is not None:
@@ -64,16 +62,19 @@ def main(argv):
             # Convert polar coordinates to Cartesian coordinates
             rho = 1
             theta = np.pi / 180
-            threshold = 15
+            threshold = 10
             min_line_length = 100
-            max_line_gap = 10
+            max_line_gap = 20
             lines = cv.HoughLinesP(edges, rho, theta, threshold, np.array([]), min_line_length, max_line_gap)
 
             # Draw lines on the original image
             for line in lines:
                 x1, y1, x2, y2 = line[0]
-                cv.line(src, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                cv.line(result_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                dist1 = np.sqrt((x1 - 250) ** 2 + (y1 - 250) ** 2)
+                dist2 = np.sqrt((x2 - 250) ** 2 + (y2 - 250) ** 2)
+                if dist1 <= 30 or dist2 <= 30:
+                    cv.line(src, (x1, y1), (x2, y2), (255, 255, 255), 2)
+                    cv.line(result_image, (x1, y1), (x2, y2), (255, 255, 255), 2)
     ## [display]
     cv.imshow("detected circles", src)
     cv.imshow("mask", result_image)
