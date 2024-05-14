@@ -6,7 +6,7 @@ from web_site.NN.server.src.utils import get_file_path_in_module
 
 
 def resize_image(image_path: Path) -> np.ndarray:
-    image = cv.imread(cv.samples.findFile(image_path), cv.IMREAD_COLOR)
+    image = cv.imread(cv.samples.findFile(os.path.abspath(image_path)), cv.IMREAD_COLOR)
     resized_image = cv.resize(image, (500, 500))
     return resized_image
 
@@ -58,9 +58,11 @@ def get_formed_clock_image(image_path: Path) -> np.ndarray:
                     cv.line(image, (x1, y1), (x2, y2), (255, 255, 255), 2)
                     cv.line(result_image, (x1, y1), (x2, y2), (255, 255, 255), 2)
 
-    directory = Path("./preprocessing_output")
+    directory = Path("./endpoints/client_files")
     output_image_path = directory / "preprocessing_output_image.jpg"
     cv.imwrite(str(output_image_path), result_image)
+
+    return output_image_path
 
 
 

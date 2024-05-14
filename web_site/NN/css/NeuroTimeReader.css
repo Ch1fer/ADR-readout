@@ -14,7 +14,6 @@
 
 body{
     background-color: #091921;
-
     width: 100%;
     height: 100dvh;
     min-width: 100vh;
@@ -35,11 +34,10 @@ header{
     width: 20vh;
 }
 
-.clock{
+#clock{
     border-width: 3px;
     width: 200px;
     height: 200px;
-    display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
@@ -59,14 +57,13 @@ header{
     }
 }
 
-.digital_clock{
+#digital_clock{
     color: white;
     font-size: 9.2vh;
     font-family: 'digital-7', sans-serif;
     border-width: 3px;
     width: 200px;
     height: 100px;
-    display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
@@ -149,7 +146,7 @@ header{
     position: absolute;
 }
 
-#dropArea_for_NN{
+#dropArea{
     width: 300px;
     height: 200px;
     border: 2px dashed #ccc;
@@ -164,34 +161,52 @@ header{
 }
 
 
-
-#dropArea_for_preprocessing{
-    width: 300px;
+#clear_image , #preprocessed_image{
+    width: 200px;
     height: 200px;
-    border: 2px dashed #ccc;
+    border: 2px solid white;
     border-radius: 5px;
     text-align: center;
     line-height: 200px;
     font-family: Arial, sans-serif;
     font-size: 16px;
     cursor: pointer;
-    color: white;
     justify-content: center;
+    justify-items: center;
+    color: white;
+
 }
+.active{
+    display: flex;
+}
+
+.not_active{
+    display: none;
+}
+
 
 .model-block{
     display: flex;
     justify-content: center;
 }
 
-#dropArea:active{
-    background-color: rgba(255, 254, 254, 0);
-}
 
 button{
-    color: white;
+    width: 150px;
+    height: 30px;
+    border: green solid 2px;
+    background-color: yellow;
+    border-radius: 5px;
+}
+
+button:active{
+    background-color: #b3dbfd;
 }
 
 input{
     color: white;
+}
+
+#original_image , #formed_image{
+    width: 200px;
 }

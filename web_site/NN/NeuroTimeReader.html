@@ -9,7 +9,7 @@
 <body>
 <header>
     <div class="clock-struct">
-        <div class="clock">
+        <div id="clock" class="active">
             <div class="hour">
                 <div class="hours"></div>
             </div>
@@ -19,9 +19,20 @@
             </div>
         </div>
 
+
+        <div id="clear_image" class="not_active">
+            Your clock image
+        </div>
+        <img class="not_active" id="original_image" src="" alt="Image from API"  />
+
         <img src="image/arrow.png" alt="arrow" class="arrow">
 
-        <div class="digital_clock">00:00</div>
+        <div id="digital_clock" class="active">00:00</div>
+        <div id="preprocessed_image" class="not_active">
+            Preprocessed clock image
+        </div>
+        <img class="not_active" id="formed_image" src="" alt="Image from API"  />
+
 
     </div>
 </header>
@@ -29,14 +40,17 @@
 
 <div class="model-block"></div>
 
-<div id="dropArea_for_NN" ondragenter="dragEnterHandler(event)" ondragover="dragOverHandler(event)"
+<div id="dropArea" ondragenter="dragEnterHandler(event)" ondragover="dragOverHandler(event)"
      ondrop="dropHandler_for_NN(event)">
     Drop your image with clock here
 </div>
-<div id="dropArea_for_preprocessing" ondragenter="dragEnterHandler(event)" ondragover="dragOverHandler(event)"
-     ondrop="dropHandler_for_preprocessing(event)">
-    Drop your image with clock here
-</div>
+
+
+<button id="button_for_switch_mode" onclick="switch_mode(event)">
+    Preprocessing Mode
+</button>
+
+
 
 
 </body>
