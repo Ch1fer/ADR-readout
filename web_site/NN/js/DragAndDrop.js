@@ -31,7 +31,7 @@ function displayTime(time) {
 }
 
 
-function dropHandler(event) {
+function dropHandler_for_NN(event) {
     console.log(event);
     event.preventDefault();
 
@@ -39,7 +39,7 @@ function dropHandler(event) {
     const formData = new FormData();
     formData.append('image', files[0]);
 
-    fetch('http://127.0.0.1:7777/upload', {
+    fetch('http://127.0.0.1:7777/upload_image_for_NN', {
         method: 'POST',
         body: formData,
     })
@@ -58,6 +58,24 @@ function dropHandler(event) {
         .catch(error => {
             console.error('Error:', error);
         });
+}
+
+
+function dropHandler_for_preprocessing(event) {
+    console.log(event);
+    event.preventDefault();
+
+    const files = event.dataTransfer.files;
+    const formData = new FormData();
+    formData.append('image', files[0]);
+
+    fetch('http://127.0.0.1:7777/upload_image_for_preprocessing', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => {
+            return 0;
+        })
 }
 
 

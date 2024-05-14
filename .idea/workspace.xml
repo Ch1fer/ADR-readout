@@ -5,8 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa74f130-ee9b-4fdb-bdcb-3536ed870d85" name="Changes" comment="Print 100">
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_clear_image.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image/preprocessing_image.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NN_analog_clock_reader/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN_analog_clock_reader/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photo_preprocessing/preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/photo_preprocessing/preprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photo_preprocessing/result_image/output_image.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_transformed_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/time_prediction_neural_network/time_prediction_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/time_prediction_neural_network/time_prediction_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +59,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -62,6 +78,8 @@
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.predict_clock.executor&quot;: &quot;Run&quot;,
+    &quot;Python.preprocessing.executor&quot;: &quot;Run&quot;,
+    &quot;Python.preprocessing_image (1).executor&quot;: &quot;Run&quot;,
     &quot;Python.time_prediction_model (1).executor&quot;: &quot;Run&quot;,
     &quot;Python.time_prediction_model (2).executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
@@ -69,7 +87,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/ADR-readout/web_site/NN/server/src/endpoints/client_files&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/ADR-readout/web_site/NN/server/src/preprocessing_image&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -82,6 +100,9 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\ADR-readout\web_site\NN\server\src\preprocessing_image" />
+      <recent name="D:\ADR-readout\web_site\NN\server\src\preprocessing_image\preprocessing_output" />
+      <recent name="D:\ADR-readout\NN_analog_clock_reader" />
       <recent name="D:\ADR-readout\web_site\NN\server\src\endpoints\client_files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -105,6 +126,72 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_site/NN/server/src/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ADR-readout" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/photo_preprocessing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/photo_preprocessing/preprocessing.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="preprocessing_image (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ADR-readout" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image/preprocessing_image.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="preprocessing_image" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ADR-readout" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="D:\ADR-readout\web_site\NN\server\src\preprocessing_image\preprocessing_image.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -204,6 +291,8 @@
       <workItem from="1715361060083" duration="9129000" />
       <workItem from="1715443673239" duration="5646000" />
       <workItem from="1715539121411" duration="76000" />
+      <workItem from="1715627656276" duration="4810000" />
+      <workItem from="1715653088029" duration="1003000" />
     </task>
     <task id="LOCAL-00001" summary="add first file to project">
       <option name="closed" value="true" />
@@ -234,6 +323,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

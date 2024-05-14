@@ -329,3 +329,4 @@ torch.save(model.state_dict(), '../web_site/NN/server/src/time_prediction_neural
 accuracy = countCorrect / sizeTest
 print(f"{countCorrect} / {sizeTest}")
 print(f"accuracy: {accuracy}")
+

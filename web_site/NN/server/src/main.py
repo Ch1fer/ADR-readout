@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from web_site.NN.server.src.endpoints import router
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
-import time_prediction_neural_network
+
 
 app = FastAPI()
 
@@ -23,4 +23,3 @@ def start_server():
 
 if __name__ == "__main__":
     start_server()
-

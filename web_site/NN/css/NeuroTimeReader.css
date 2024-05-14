@@ -149,7 +149,23 @@ header{
     position: absolute;
 }
 
-#dropArea {
+#dropArea_for_NN{
+    width: 300px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 200px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    justify-content: center;
+}
+
+
+
+#dropArea_for_preprocessing{
     width: 300px;
     height: 200px;
     border: 2px dashed #ccc;
