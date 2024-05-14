@@ -87,6 +87,7 @@ def get_device() -> torch.device:
 def implement_model(trained_model: Path, device: torch.device) -> CustomModel:
     model = CustomModel().to(device)
     model.load_state_dict(torch.load(trained_model, map_location=device))
+    model.eval()
     return model
 
 
