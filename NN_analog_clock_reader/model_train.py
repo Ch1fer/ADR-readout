@@ -308,6 +308,8 @@ plt.show()
 sizeTest = len(datasetTest)
 countCorrect = 0
 
+model.eval()
+
 for img, label in dataloader_test:
     hour, minute = model(img.to(device))
     for i in range(len(hour)):

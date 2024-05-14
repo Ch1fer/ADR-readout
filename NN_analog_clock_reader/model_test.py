@@ -96,6 +96,7 @@ class CustomModel(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = CustomModel().to(device)
 model.load_state_dict(torch.load('../web_site/NN/server/src/time_prediction_neural_network/model.pth', map_location=device))
+model.eval()
 
 image_dir = 'data/images'
 label_dir = 'data/label.csv'
@@ -142,7 +143,7 @@ for img, label in dataloader_test:
 
         fire_hour = torch.argmax(hourPredict).item()
 
-        if fire_hour == label[i][0] and abs(minute[i] - label[i][1]) < 5:
+        if fire_hour == label[i][0] and abs(minute[i] - label[i][1]) < 2:
             countCorrect += 1
         # else:
         #     plt.imshow(img[i].permute(1, 2, 0).numpy())
