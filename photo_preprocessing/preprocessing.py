@@ -2,22 +2,14 @@ import os
 import cv2 as cv
 import numpy as np
 
+
 def draw(file_path):
-    ## [deleting output image if exists]
-    # folder_path = "photo_preprocessing/result_image"
-    # if os.path.exists(folder_path) and os.path.isdir(folder_path):
-    #     files = os.listdir(folder_path)
-        
-    #     if files is not None:
-    #         for file in files:
-    #             file_path = os.path.join(folder_path, file)
-    #             os.remove(file_path)
     extension = file_path.split('.')[1]
     
     # Loads an image
     src = cv.imread(cv.samples.findFile(file_path), cv.IMREAD_COLOR)
     src = cv.resize(src, (500, 500))
-    
+
     ## [convert_to_gray]
     # Convert it to gray
     gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)

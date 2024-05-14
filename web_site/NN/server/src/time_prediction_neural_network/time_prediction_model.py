@@ -1,5 +1,4 @@
 from typing import NamedTuple
-
 import torch
 import torch.nn as nn
 import torchvision as tv
@@ -77,6 +76,9 @@ class CustomModel(nn.Module):
 class Time(NamedTuple):
     hour: int
     minute: int
+
+    def to_dict(self) -> dict:
+        return self._asdict()
 
 
 def get_device() -> torch.device:
