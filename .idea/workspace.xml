@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa74f130-ee9b-4fdb-bdcb-3536ed870d85" name="Changes" comment="Print 100">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/preprocessing_output_image.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_clear_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_clear_image.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image/preprocessing_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/preprocessing_image/preprocessing_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/time_prediction_neural_network/time_prediction_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/time_prediction_neural_network/time_prediction_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,14 +39,12 @@
     &quot;assignee&quot;: &quot;Ch1fer&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">
-    <option name="selectedUrlAndAccountId">
-      <UrlAndAccount>
-        <option name="accountId" value="3a2267dc-dd76-4aa9-b3bf-5cabf4bc4183" />
-        <option name="url" value="https://github.com/Ch1fer/ADR-readout.git" />
-      </UrlAndAccount>
-    </option>
-  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Ch1fer/ADR-readout.git&quot;,
+    &quot;accountId&quot;: &quot;b069b17f-723d-4f60-a9bc-dc4d068158f3&quot;
+  }
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
