@@ -20,15 +20,22 @@ function switch_mode(event){
     const digital_clock = document.getElementById("digital_clock")
     const area_for_preprocessed_image = document.getElementById("preprocessed_image")
     const area_for_clear_image = document.getElementById("clear_image")
+    const second_arrow = document.getElementById("sec_arrow")
+    const clock_structure = document.getElementById("clock-struct")
+
     if (dropArea.ondrop === dropHandler_for_preprocessing){
         dropArea.ondrop = dropHandler_for_NN;
-        switch_button.innerText = "Preprocessing Mode";
+        switch_button.innerText = "Full Mode";
         analog_clock.className = "active"
         area_for_clear_image.className = "not_active"
         digital_clock.className = "active"
         area_for_preprocessed_image.className = "not_active"
         original_image.className = "not_active"
         formed_image.className = "not_active"
+        second_arrow.className = 'not_active'
+        clock_structure.className = 'clock_struct_for_NN'
+
+
 
     }
     else {
@@ -36,10 +43,12 @@ function switch_mode(event){
         switch_button.innerText = "NN Mode";
         analog_clock.className = "not_active"
         area_for_clear_image.className = "active"
-        digital_clock.className = "not_active"
+
         area_for_preprocessed_image.className = "active"
         original_image.className = "not_active"
         formed_image.className = 'not_active'
+        second_arrow.className = 'active'
+        clock_structure.className = 'clock_struct_for_full'
     }
 
 
@@ -104,6 +113,8 @@ function dropHandler_for_preprocessing(event) {
 
     const files = event.dataTransfer.files;
     const formData = new FormData();
+    formData.append('image', files[0]);
+
     const area_for_clear_image = document.getElementById("clear_image")
     const area_for_processed_image = document.getElementById("preprocessed_image")
     const original_image = document.getElementById('original_image');
@@ -113,12 +124,26 @@ function dropHandler_for_preprocessing(event) {
     area_for_clear_image.className = "not_active"
     area_for_processed_image.className = "not_active"
 
+    fetch('http://127.0.0.1:7777/upload_image_for_full', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            displayTime(data);
+            display_result(getResult(data))
+            display_result_mode()
+            displayActualTime = false;
+        })
+
+        .catch(error => {
+            console.error('Error:', error);
+        });
 
 
-
-    formData.append('image', files[0]);
-
-    fetch('http://127.0.0.1:7777/upload_image_for_preprocessing', {
+    fetch('http://127.0.0.1:7777/output_image', {
         method: 'POST',
         body: formData,
     })
@@ -156,6 +181,77 @@ function dropHandler_for_preprocessing(event) {
 
 
 
+
+
+}
+
+
+function display_result(result){
+    const hour_result = document.getElementById("hour_result")
+    const minute_result = document.getElementById("minutes_result")
+    const correct_result = document.getElementById("correct_result")
+    const not_correct_result = document.getElementById("not_correct_result")
+
+    if (result.hour === 0 && result.minute === 0){
+        correct_result.className = "active"
+        not_correct_result.className = "not_active"
+        hour_result.className = "not_active"
+        minute_result.className = "not_active"
+    }
+    else {
+        correct_result.className = "not_active"
+        not_correct_result.className = "active_for_button"
+        hour_result.className = "active"
+        minute_result.className = "active"
+        hour_result.innerText = `You need to turn the hour hand forward by ${result.hour} hours.`
+        minute_result.innerText = `You need to turn the minute hand forward by ${result.minute} minutes.`
+    }
+}
+
+function getResult(time){
+    let date = new Date();
+    let hour = Math.abs(date.getHours() - time.hour)
+    let minutes = Math.abs(date.getMinutes() - time.minute)
+    return {
+        "hour": hour,
+        "minute": minutes
+    }
+}
+
+function back_button(event){
+    const area_for_clear_image = document.getElementById("clear_image")
+    const area_for_processed_image = document.getElementById("preprocessed_image")
+    const result_block = document.getElementById("result_block")
+    const original_image = document.getElementById('original_image');
+    const formed_image = document.getElementById('formed_image')
+    const dropArea = document.getElementById("dropArea")
+    const button_back = document.getElementById("button_back")
+    const button_for_switch_mode = document.getElementById("button_for_switch_mode")
+
+    button_back.className = "not_active";
+    original_image.className = "not_active"
+    formed_image.className = "not_active"
+    dropArea.className = "active"
+    button_for_switch_mode.className = "active_for_button"
+    result_block.className = "not_active"
+    area_for_clear_image.className = "active"
+    area_for_processed_image.className = "active"
+
+}
+
+function display_result_mode(){
+    const result_block = document.getElementById("result_block")
+    const original_image = document.getElementById('original_image');
+    const formed_image = document.getElementById('formed_image')
+    const dropArea = document.getElementById("dropArea")
+    const button_back = document.getElementById("button_back")
+    const button_for_switch_mode = document.getElementById("button_for_switch_mode")
+    button_back.className = "active_for_button";
+    original_image.className = "active"
+    formed_image.className = "active"
+    dropArea.className = "not_active"
+    button_for_switch_mode.className = "not_active"
+    result_block.className = "active"
 }
 
 
@@ -166,4 +262,4 @@ setInterval(() => {
     let minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
 
     displayTime({hour: hour, minute: minute})
-}, 1000)
+}, 100)

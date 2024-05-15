@@ -3,6 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+html{
+    font-family: sans-serif;
+}
 
 @font-face {
     font-family: 'digital-7';
@@ -30,7 +33,7 @@ header{
     align-items: center;
 }
 
-.arrow{
+#arrow, #sec_arrow{
     width: 20vh;
 }
 
@@ -76,18 +79,27 @@ header{
 
 }
 
-.clock-struct{
+#clock-struct{
     /*width: fit-content;*/
     /*display: flex;*/
     /*gap: 30px;*/
     /*align-items: center;*/
     display: grid;
-    grid-template-columns: 200px 200px 200px;
     align-items: center;
     justify-items: center;
 }
 
+.clock_struct_for_NN{
+    grid-template-columns: 200px 200px 200px;
+}
 
+.clock_struct_for_full{
+    grid-template-columns: 200px 200px 200px 200px 200px;
+}
+
+img{
+    border-radius: 10px;
+}
 
 .hour {
     position: absolute;
@@ -197,6 +209,7 @@ button{
     border: green solid 2px;
     background-color: yellow;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 button:active{
@@ -207,6 +220,36 @@ input{
     color: white;
 }
 
+.active_for_button{
+    display: block;
+}
+
+
 #original_image , #formed_image{
     width: 200px;
+}
+
+#result_block{
+    color: white;
+    border-radius: 10px;
+    border: white solid 3px;
+    width: 600px;
+    height: 200px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+
+#correct_result{
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+
+}
+
+#not_correct_result{
+    align-items: center;
+    padding-bottom: 10px ;
 }

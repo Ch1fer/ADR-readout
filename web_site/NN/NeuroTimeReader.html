@@ -8,7 +8,7 @@
 </head>
 <body>
 <header>
-    <div class="clock-struct">
+    <div id="clock-struct" class="clock_struct_for_NN">
         <div id="clock" class="active">
             <div class="hour">
                 <div class="hours"></div>
@@ -25,13 +25,17 @@
         </div>
         <img class="not_active" id="original_image" src="" alt="Image from API"  />
 
-        <img src="image/arrow.png" alt="arrow" class="arrow">
+        <img src="image/arrow.png" alt="arrow" id="arrow">
 
-        <div id="digital_clock" class="active">00:00</div>
         <div id="preprocessed_image" class="not_active">
             Preprocessed clock image
         </div>
         <img class="not_active" id="formed_image" src="" alt="Image from API"  />
+        <img src="image/arrow.png" alt="arrow" class="not_active" id="sec_arrow">
+
+        <div id="digital_clock" class="active">00:00</div>
+
+
 
 
     </div>
@@ -44,10 +48,20 @@
      ondrop="dropHandler_for_NN(event)">
     Drop your image with clock here
 </div>
+<div id="result_block" class="not_active">
+    <h4 class="active" id="not_correct_result">Your clock is not set correctly</h4>
+    <h4 class="not_active" id="correct_result">Your clock is correctly</h4>
+    <p id="hour_result"></p>
+    <p id="minutes_result"></p>
+</div>
 
 
-<button id="button_for_switch_mode" onclick="switch_mode(event)">
-    Preprocessing Mode
+<button id="button_for_switch_mode" onclick="switch_mode(event)" class="active_for_button">
+    Full Mode
+</button>
+
+<button id="button_back" class="not_active" onclick = "back_button(event)">
+    Back
 </button>
 
 
