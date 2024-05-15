@@ -199,19 +199,31 @@ function display_result(result){
         minute_result.className = "not_active"
     }
     else {
+
         correct_result.className = "not_active"
         not_correct_result.className = "active_for_button"
         hour_result.className = "active"
         minute_result.className = "active"
-        hour_result.innerText = `You need to turn the hour hand forward by ${result.hour} hours.`
-        minute_result.innerText = `You need to turn the minute hand forward by ${result.minute} minutes.`
+        if(result.hour > 0){
+            hour_result.innerText = `You need to turn the hour hand forward by ${result.hour} hours.`
+        }
+        else {
+            hour_result.innerText = `You need to turn the hour hand back by ${Math.abs(result.hour)} hours.`
+        }
+
+        if(result.minute > 0){
+            minute_result.innerText = `You need to turn the minute hand forward by ${result.minute} minutes.`
+        }
+        else {
+            minute_result.innerText = `You need to turn the minute hand back by ${Math.abs(result.minute)} minutes.`
+        }
     }
 }
 
 function getResult(time){
     let date = new Date();
-    let hour = Math.abs(date.getHours() - time.hour)
-    let minutes = Math.abs(date.getMinutes() - time.minute)
+    let hour = date.getHours() - time.hour
+    let minutes = date.getMinutes() - time.minute
     return {
         "hour": hour,
         "minute": minutes

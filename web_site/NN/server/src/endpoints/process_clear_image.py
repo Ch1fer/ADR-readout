@@ -9,7 +9,7 @@ from web_site.NN.server.src.time_prediction_neural_network import get_prediction
 @router.post("/upload_image_for_full")
 async def upload(image: UploadFile):
     directory = Path("./endpoints/client_files")
-    image_path = directory / "image"
+    image_path = directory / "image.jpg"
     output_image_path = directory / "preprocessing_output_image.jpg"
 
     contents = await image.read()

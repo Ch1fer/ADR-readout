@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="aa74f130-ee9b-4fdb-bdcb-3536ed870d85" name="Changes" comment="Print 100">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/NeuroTimeReader.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/css/NeuroTimeReader.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/js/DragAndDrop.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/client_files/image" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_clear_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/endpoints/process_clear_image.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_site/NN/server/src/time_prediction_neural_network/time_prediction_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_site/NN/server/src/time_prediction_neural_network/time_prediction_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +98,7 @@
       <recent name="D:\ADR-readout\web_site\NN\server\neural_network" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="ADR-readout" />
       <option name="ENV_FILES" value="" />
@@ -283,6 +281,8 @@
       <workItem from="1715627656276" duration="4810000" />
       <workItem from="1715653088029" duration="1781000" />
       <workItem from="1715701044094" duration="5223000" />
+      <workItem from="1715774931086" duration="1282000" />
+      <workItem from="1715780865096" duration="668000" />
     </task>
     <task id="LOCAL-00001" summary="add first file to project">
       <option name="closed" value="true" />
@@ -308,7 +308,23 @@
       <option name="project" value="LOCAL" />
       <updated>1710086148404</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Print 100">
+      <option name="closed" value="true" />
+      <created>1715735151453</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1715735151453</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Print 100">
+      <option name="closed" value="true" />
+      <created>1715735180318</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1715735180318</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
